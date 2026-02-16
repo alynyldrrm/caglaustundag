@@ -8,12 +8,12 @@
             <a href="/{{ App::getLocale() }}">{{ __('Ana Sayfa') }}</a>
             @if($selected_menus->first())
                 <span>/</span>
-                <a href="#">{{ $selected_menus->first()->name }}</a>
+                <a href="#">{!! $selected_menus->first()->name !!}</a>
             @endif
             <span>/</span>
-            <span class="current">{{ $main_title }}</span>
+            <span class="current">{!! $main_title !!}</span>
         </nav>
-        <h1 class="page-title">{{ $main_title }}</h1>
+        <h1 class="page-title">{!! $main_title !!}</h1>
     </div>
 </section>
 

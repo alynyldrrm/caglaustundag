@@ -28,7 +28,7 @@
                         <div class="col-lg-4">
                             <div class="row align-items-center">
                                 <div>
-                                    <h5 class="m-0 p-0">{{ $baslik }}</h5>
+                                    <h5 class="m-0 p-0">{!! $baslik !!}</h5>
                                     <h3>{{ _('Homepage section yazı') }}</h3>
                                 </div>
                             </div>
@@ -48,15 +48,15 @@
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col-lg-5">
-                            <img alt="{{ $baslik }}" src="{{ $resim }}" class="img-fluid">
+                            <img alt="{!! $baslik !!}" src="{{ $resim }}" class="img-fluid">
                         </div>
                         <div class="col-lg-7">
                             <div class="heading-text heading-section mt-5">
-                                <h1 style="font-size:45px;">{{ $baslik }}</h1>
+                                <h1 style="font-size:45px;">{!! $baslik !!}</h1>
                                 <p>{!! $aciklama !!}</p>
                                 @if ($buton_varmi)
                                     <a class="btn btn-primary mt-1" href="{{ $buton_link }}">
-                                        {{ $buton_metin }}
+                                        {!! $buton_metin !!}
                                     </a>
                                 @endif
                             </div>
@@ -88,7 +88,7 @@
                     <div class="col-md-9 col-lg-9">
                         <div class="call-to-action-content">
                             <h2 class="font-weight-normal text-6 mb-0"><strong
-                                    class="font-weight-extra-bold">{{ $baslik }} </strong></h2>
+                                    class="font-weight-extra-bold">{!! $baslik !!} </strong></h2>
                             {!! $aciklama !!}
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                             @if ($buton_varmi)
                                 <a class="btn btn-dark btn-lg text-3 font-weight-semibold px-4 py-3"
                                     href="{{ $buton_link }}">
-                                    {{ $buton_metin }}
+                                    {!! $buton_metin !!}
                                 </a><span
                                     class="arrow hlb d-none d-md-block appear-animation animated rotateInUpLeft appear-animation-visible"
                                     data-appear-animation="rotateInUpLeft"
@@ -114,12 +114,12 @@
 					<div class="container">
 						<div class="row align-items-center justify-content-center justify-content-lg-between pb-5 pb-lg-0">
 							<div class="col-lg-5 order-2 order-lg-1 pt-4 pt-lg-0 pb-5 pb-lg-0 mt-5 mt-lg-0 appear-animation animated fadeInRightShorter appear-animation-visible" data-appear-animation="fadeInRightShorter" data-appear-animation-delay="200" style="animation-delay: 200ms;">
-								<h2 class="font-weight-bold text-color-light text-7 mb-2">{{ $baslik }}</h2>
+								<h2 class="font-weight-bold text-color-light text-7 mb-2">{!! $baslik !!}</h2>
 								<p class="lead font-weight-light text-color-light text-3">{!! $aciklama !!}</p>
 
                                  @if ($buton_varmi)
                             <a class="btn btn-primary btn-px-5 btn-py-2 text-2" href="{{ $buton_link }}">
-                                {{ $buton_metin }}
+                                {!! $buton_metin !!}
                             </a>
                         @endif
 

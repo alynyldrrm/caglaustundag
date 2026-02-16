@@ -27,19 +27,19 @@
                             <?php if($contact->address): ?>
                             <li>
                                 <i class="fas fa-map-marker-alt"></i>
-                                <span><?php echo e($contact->address); ?></span>
+                                <span><?php echo $contact->address; ?></span>
                             </li>
                             <?php endif; ?>
                             <?php if($contact->phone): ?>
                             <li>
                                 <i class="fas fa-phone"></i>
-                                <a href="tel:<?php echo e($contact->phone); ?>"><?php echo e($contact->phone); ?></a>
+                                <a href="tel:<?php echo e($contact->phone); ?>"><?php echo $contact->phone; ?></a>
                             </li>
                             <?php endif; ?>
                             <?php if($contact->email): ?>
                             <li>
                                 <i class="fas fa-envelope"></i>
-                                <a href="mailto:<?php echo e($contact->email); ?>"><?php echo e($contact->email); ?></a>
+                                <a href="mailto:<?php echo e($contact->email); ?>"><?php echo $contact->email; ?></a>
                             </li>
                             <?php endif; ?>
                         </ul>
@@ -54,7 +54,7 @@
                             <?php $__currentLoopData = $menus->take(5); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <li>
                                     <a href="<?php echo e($menu['url'] == '' ? route('showPage', [$menu['language']['key'], $menu['permalink']]) : $menu['url']); ?>">
-                                        <?php echo e($menu->name); ?>
+                                        <?php echo $menu->name; ?>
 
                                     </a>
                                 </li>

@@ -27,11 +27,11 @@
                     <i class="fas fa-chevron-right"></i>
                     <a href="<?php echo e(url()->previous()); ?>"><?php echo e(__('Hizmetler')); ?></a>
                     <i class="fas fa-chevron-right"></i>
-                    <span><?php echo e($baslik); ?></span>
+                    <span><?php echo $baslik; ?></span>
                 </nav>
-                <h1 class="service-title-compact"><?php echo e($baslik); ?></h1>
+                <h1 class="service-title-compact"><?php echo $baslik; ?></h1>
                 <?php if($altbaslik): ?>
-                    <p class="service-subtitle-compact"><?php echo e($altbaslik); ?></p>
+                    <p class="service-subtitle-compact"><?php echo $altbaslik; ?></p>
                 <?php endif; ?>
             </div>
         </section>
@@ -51,7 +51,7 @@
                         ?>
                         <?php if($intro): ?>
                         <div class="intro-text-compact">
-                            <?php echo e($intro); ?>
+                            <?php echo $intro; ?>
 
                         </div>
                         <?php endif; ?>
@@ -86,12 +86,12 @@
                         <div class="features-section-compact">
                             <?php $__currentLoopData = $groups; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="feature-group-compact">
-                                <h3 class="group-title-compact"><?php echo e($group['title'] ?? ''); ?></h3>
+                                <h3 class="group-title-compact"><?php echo $group['title'] ?? ''; ?></h3>
                                 <div class="features-grid-compact">
                                     <?php $__currentLoopData = $group['items']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="feature-item-compact">
                                         <i class="fas fa-check-circle"></i>
-                                        <span><?php echo e($item); ?></span>
+                                        <span><?php echo $item; ?></span>
                                     </div>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
@@ -132,7 +132,7 @@
                                         <li>
                                             <a href="<?php echo e(route('showPage', [$hlanguageKey, $hmenuPermalink, $hizmet['permalink']])); ?>">
                                                 <i class="fas fa-chevron-right"></i>
-                                                <span><?php echo e($hbaslik); ?></span>
+                                                <span><?php echo $hbaslik; ?></span>
                                             </a>
                                         </li>
                                     <?php endif; ?>
@@ -174,10 +174,10 @@
                             <article class="service-card-compact">
                                 <div class="card-header-compact">
                                     <span class="card-num-compact"><?php echo e(sprintf('%02d', $index + 1)); ?></span>
-                                    <h3><?php echo e($baslik); ?></h3>
+                                    <h3><?php echo $baslik; ?></h3>
                                 </div>
                                 <?php if($altbaslik): ?>
-                                    <p class="card-desc-compact"><?php echo e($altbaslik); ?></p>
+                                    <p class="card-desc-compact"><?php echo $altbaslik; ?></p>
                                 <?php endif; ?>
                                 <a href="<?php echo e(route('showPage', [$languageKey, $menuPermalink, $hizmet['permalink']])); ?>" class="card-link-compact">
                                     <?php echo e(__('Detay')); ?>

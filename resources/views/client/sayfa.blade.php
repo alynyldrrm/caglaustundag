@@ -17,7 +17,7 @@
     
     <section class="page-header">
         <div class="container">
-            <h1 class="page-title">{{ $menu->name ?? __('Hakkımızda') }}</h1>
+            <h1 class="page-title">{!! $menu->name ?? __('Hakkımızda') !!}</h1>
         </div>
     </section>
 
@@ -27,11 +27,11 @@
                 <div class="hakkimizda-grid">
                     <div class="hakkimizda-image">
                         @if(isset($hakkimizda['fields']['gorsel'][0]))
-                            <img src="{{ getImageLink($hakkimizda['fields']['gorsel'][0]['path'], ['w' => 800, 'h' => 600, 'fit' => 'cover']) }}" alt="{{ getValue('baslik', $hakkimizda) }}">
+                            <img src="{{ getImageLink($hakkimizda['fields']['gorsel'][0]['path'], ['w' => 800, 'h' => 600, 'fit' => 'cover']) }}" alt="{!! getValue('baslik', $hakkimizda) !!}">
                         @endif
                     </div>
                     <div class="hakkimizda-content">
-                        <h2>{{ getValue('baslik', $hakkimizda) }}</h2>
+                        <h2>{!! getValue('baslik', $hakkimizda) !!}</h2>
                         <div class="hakkimizda-text">
                             {!! getValue('icerik', $hakkimizda) !!}
                         </div>
@@ -61,7 +61,7 @@
                     @if($contactSettings && count($contactSettings) > 0)
                         @foreach($contactSettings as $item)
                         <div class="contact-card">
-                            <h3 class="contact-branch">{{ $item['name'] ?? 'MERKEZ' }}</h3>
+                            <h3 class="contact-branch">{!! $item['name'] ?? 'MERKEZ' !!}</h3>
                             
                             <div class="contact-items">
                                 @if(!empty($item['address']))
@@ -69,7 +69,7 @@
                                     <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
                                     <div class="contact-detail">
                                         <span class="label">{{ __('Adres') }}</span>
-                                        <p>{{ $item['address'] }}</p>
+                                        <p>{!! $item['address'] !!}</p>
                                     </div>
                                 </div>
                                 @endif
@@ -79,7 +79,7 @@
                                     <div class="contact-icon"><i class="fas fa-phone"></i></div>
                                     <div class="contact-detail">
                                         <span class="label">{{ __('Telefon') }}</span>
-                                        <a href="tel:{{ str_replace(' ', '', $item['phone']) }}">{{ $item['phone'] }}</a>
+                                        <a href="tel:{{ str_replace(' ', '', $item['phone']) }}">{!! $item['phone'] !!}</a>
                                     </div>
                                 </div>
                                 @endif
@@ -89,7 +89,7 @@
                                     <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                                     <div class="contact-detail">
                                         <span class="label">{{ __('E-Posta') }}</span>
-                                        <a href="mailto:{{ $item['email'] }}">{{ $item['email'] }}</a>
+                                        <a href="mailto:{{ $item['email'] }}">{!! $item['email'] !!}</a>
                                     </div>
                                 </div>
                                 @endif
@@ -146,7 +146,7 @@
 @else
     <section class="page-header">
         <div class="container">
-            <h1 class="page-title">{{ $menu->name ?? '' }}</h1>
+            <h1 class="page-title">{!! $menu->name ?? '' !!}</h1>
         </div>
     </section>
 
@@ -156,7 +156,7 @@
                 <div class="page-list">
                     @foreach($list as $item)
                         <div class="page-item">
-                            <h3>{{ $item['name'] ?? '' }}</h3>
+                            <h3>{!! $item['name'] ?? '' !!}</h3>
                             <div class="page-item-content">
                                 {!! $item['content'] ?? '' !!}
                             </div>

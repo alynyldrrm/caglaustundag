@@ -27,11 +27,11 @@
                     <i class="fas fa-chevron-right"></i>
                     <a href="{{ url()->previous() }}">{{ __('Hizmetler') }}</a>
                     <i class="fas fa-chevron-right"></i>
-                    <span>{{ $baslik }}</span>
+                    <span>{!! $baslik !!}</span>
                 </nav>
-                <h1 class="service-title-compact">{{ $baslik }}</h1>
+                <h1 class="service-title-compact">{!! $baslik !!}</h1>
                 @if($altbaslik)
-                    <p class="service-subtitle-compact">{{ $altbaslik }}</p>
+                    <p class="service-subtitle-compact">{!! $altbaslik !!}</p>
                 @endif
             </div>
         </section>
@@ -51,7 +51,7 @@
                         @endphp
                         @if($intro)
                         <div class="intro-text-compact">
-                            {{ $intro }}
+                            {!! $intro !!}
                         </div>
                         @endif
 
@@ -85,12 +85,12 @@
                         <div class="features-section-compact">
                             @foreach($groups as $group)
                             <div class="feature-group-compact">
-                                <h3 class="group-title-compact">{{ $group['title'] ?? '' }}</h3>
+                                <h3 class="group-title-compact">{!! $group['title'] ?? '' !!}</h3>
                                 <div class="features-grid-compact">
                                     @foreach($group['items'] as $item)
                                     <div class="feature-item-compact">
                                         <i class="fas fa-check-circle"></i>
-                                        <span>{{ $item }}</span>
+                                        <span>{!! $item !!}</span>
                                     </div>
                                     @endforeach
                                 </div>
@@ -130,7 +130,7 @@
                                         <li>
                                             <a href="{{ route('showPage', [$hlanguageKey, $hmenuPermalink, $hizmet['permalink']]) }}">
                                                 <i class="fas fa-chevron-right"></i>
-                                                <span>{{ $hbaslik }}</span>
+                                                <span>{!! $hbaslik !!}</span>
                                             </a>
                                         </li>
                                     @endif
@@ -172,10 +172,10 @@
                             <article class="service-card-compact">
                                 <div class="card-header-compact">
                                     <span class="card-num-compact">{{ sprintf('%02d', $index + 1) }}</span>
-                                    <h3>{{ $baslik }}</h3>
+                                    <h3>{!! $baslik !!}</h3>
                                 </div>
                                 @if($altbaslik)
-                                    <p class="card-desc-compact">{{ $altbaslik }}</p>
+                                    <p class="card-desc-compact">{!! $altbaslik !!}</p>
                                 @endif
                                 <a href="{{ route('showPage', [$languageKey, $menuPermalink, $hizmet['permalink']]) }}" class="card-link-compact">
                                     {{ __('Detay') }}

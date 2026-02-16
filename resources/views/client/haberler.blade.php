@@ -27,7 +27,7 @@
                 <span>/</span>
                 <a href="/{{ App::getLocale() }}/haberler">{{ __('Haberler') }}</a>
                 <span>/</span>
-                <span class="current">{{ $baslik }}</span>
+                <span class="current">{!! $baslik !!}</span>
             </nav>
         </div>
     </section>
@@ -38,7 +38,7 @@
                 @if(isset($detail['fields']['resim'][0]))
                     <div class="news-hero-image">
                         <img src="{{ getImageLink($detail['fields']['resim'][0]['path'], ['w' => 1200, 'h' => 600, 'q' => 90, 'fit' => 'cover']) }}" 
-                             alt="{{ $baslik }}">
+                             alt="{!! $baslik !!}">
                     </div>
                 @endif
                 
@@ -47,12 +47,12 @@
                         <div class="news-meta">
                             <span class="news-date-badge">
                                 <i class="fas fa-calendar-alt"></i>
-                                {{ $tarih }}
+                                {!! $tarih !!}
                             </span>
                         </div>
                     @endif
                     
-                    <h1 class="news-article-title">{{ $baslik }}</h1>
+                    <h1 class="news-article-title">{!! $baslik !!}</h1>
                     
                     @if($icerik)
                         <div class="news-article-text">
@@ -79,7 +79,7 @@
     @section('content')
     <section class="page-header">
         <div class="container">
-            <h1 class="page-title">{{ $menu->name ?? __('Haberler') }}</h1>
+            <h1 class="page-title">{!! $menu->name ?? __('Haberler') !!}</h1>
             <p class="page-subtitle">{{ __('Güncel haber ve duyurularımız') }}</p>
         </div>
     </section>
@@ -94,7 +94,7 @@
                                 <div class="news-image">
                                     @if(isset($haber['fields']['resim'][0]))
                                         <img src="{{ getImageLink($haber['fields']['resim'][0]['path'], ['w' => 600, 'h' => 400, 'q' => 90, 'fit' => 'cover']) }}" 
-                                             alt="{{ $haber['name'] }}"
+                                             alt="{!! $haber['name'] !!}"
                                              loading="lazy">
                                     @else
                                         <div class="news-placeholder">
@@ -106,9 +106,9 @@
                                     @endif
                                 </div>
                                 <div class="news-content">
-                                    <h2 class="news-title">{{ $haber['name'] }}</h2>
+                                    <h2 class="news-title">{!! $haber['name'] !!}</h2>
                                     @if(getValue('icerik', $haber))
-                                        <p class="news-excerpt">{{ substr(strip_tags(getValue('icerik', $haber)), 0, 150) }}...</p>
+                                        <p class="news-excerpt">{!! substr(strip_tags(getValue('icerik', $haber)), 0, 150) !!}...</p>
                                     @endif
                                     <span class="news-read-more">
                                         {{ __('Devamını Oku') }}

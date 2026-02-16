@@ -20,7 +20,7 @@
             <span>/</span>
             <a href="/{{ App::getLocale() }}/haberler">{{ __('Haberler') }}</a>
             <span>/</span>
-            <span class="current">{{ $baslik }}</span>
+            <span class="current">{!! $baslik !!}</span>
         </nav>
     </div>
 </section>
@@ -31,7 +31,7 @@
             @if(isset($detail['fields']['resim'][0]))
                 <div class="news-hero-image">
                     <img src="{{ getImageLink($detail['fields']['resim'][0]['path'], ['w' => 1200, 'h' => 600, 'q' => 90, 'fit' => 'cover']) }}" 
-                         alt="{{ $baslik }}">
+                         alt="{!! $baslik !!}">
                 </div>
             @endif
             
@@ -40,12 +40,12 @@
                     <div class="news-meta">
                         <span class="news-date-badge">
                             <i class="fas fa-calendar-alt"></i>
-                            {{ $tarih }}
+                            {!! $tarih !!}
                         </span>
                     </div>
                 @endif
                 
-                <h1 class="news-article-title">{{ $baslik }}</h1>
+                <h1 class="news-article-title">{!! $baslik !!}</h1>
                 
                 @if($icerik)
                     <div class="news-article-text">

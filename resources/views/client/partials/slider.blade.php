@@ -44,16 +44,16 @@
                 <!-- İÇERİK -->
                 <div class="slide-content {{ $pozisyon_class }}">
                     @if ($baslik)
-                        <h2 class="slide-title">{{ $baslik }}</h2>
+                        <h2 class="slide-title">{!! $baslik !!}</h2>
                     @endif
 
                     @if ($icerik)
-                        <p class="slide-text">{{ $icerik }}</p>
+                        <p class="slide-text">{!! $icerik !!}</p>
                     @endif
 
                     @if ($buton_varmi && $buton_metin)
                         <a href="{{ $buton_link }}" class="slide-btn">
-                            {{ $buton_metin }}
+                            {!! $buton_metin !!}
                             <i class="fas fa-arrow-right"></i>
                         </a>
                     @endif

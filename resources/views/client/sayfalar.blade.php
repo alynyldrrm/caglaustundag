@@ -30,10 +30,10 @@ $page = isset($list[0]) ? $list[0] : null;
 
 						<div class="{{ $class }} order-2">
 							<div class="overflow-hidden">
-								<h2 class="text-color-dark font-weight-bold text-12 mb-2 pt-0 mt-0 appear-animation animated maskUp appear-animation-visible" data-appear-animation="maskUp" data-appear-animation-delay="300" style="animation-delay: 300ms;">{{getValue('baslik', $page )}}</h2>
+								<h2 class="text-color-dark font-weight-bold text-12 mb-2 pt-0 mt-0 appear-animation animated maskUp appear-animation-visible" data-appear-animation="maskUp" data-appear-animation-delay="300" style="animation-delay: 300ms;">{!! getValue('baslik', $page ) !!}</h2>
 							</div>
 							<div class="overflow-hidden mb-3">
-								<p class="font-weight-bold text-primary text-uppercase mb-0 appear-animation animated maskUp appear-animation-visible" data-appear-animation="maskUp" data-appear-animation-delay="500" style="animation-delay: 500ms;">{{$ustmenu ? $ustmenu->name : ''}}</p>
+								<p class="font-weight-bold text-primary text-uppercase mb-0 appear-animation animated maskUp appear-animation-visible" data-appear-animation="maskUp" data-appear-animation-delay="500" style="animation-delay: 500ms;">{!! $ustmenu ? $ustmenu->name : '' !!}</p>
 							</div>
 
 							<p class="pb-3 appear-animation animated fadeInUpShorter appear-animation-visible" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="800" style="animation-delay: 800ms;">{!! getValue('icerik', $page )  !!}</p>

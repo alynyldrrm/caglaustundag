@@ -13,7 +13,7 @@
 @section('content')
 <section class="page-header">
     <div class="container">
-        <h1 class="page-title">{{ $menu->name ?? __('Hakkımızda') }}</h1>
+        <h1 class="page-title">{!! $menu->name ?? __('Hakkımızda') !!}</h1>
     </div>
 </section>
 
@@ -23,11 +23,11 @@
             <div class="hakkimizda-grid">
                 <div class="hakkimizda-image">
                     @if(isset($hakkimizda['fields']['gorsel'][0]))
-                        <img src="{{ getImageLink($hakkimizda['fields']['gorsel'][0]['path'], ['w' => 800, 'h' => 600, 'fit' => 'cover']) }}" alt="{{ getValue('baslik', $hakkimizda) }}">
+                        <img src="{{ getImageLink($hakkimizda['fields']['gorsel'][0]['path'], ['w' => 800, 'h' => 600, 'fit' => 'cover']) }}" alt="{!! getValue('baslik', $hakkimizda) !!}">
                     @endif
                 </div>
                 <div class="hakkimizda-content">
-                    <h2>{{ getValue('baslik', $hakkimizda) }}</h2>
+                    <h2>{!! getValue('baslik', $hakkimizda) !!}</h2>
                     <div class="hakkimizda-text">
                         {!! getValue('icerik', $hakkimizda) !!}
                     </div>

@@ -14,7 +14,7 @@
 @section('content')
 <section class="page-header">
     <div class="container">
-        <h1 class="page-title">{{ $menu->name ?? __('Referanslar') }}</h1>
+        <h1 class="page-title">{!! $menu->name ?? __('Referanslar') !!}</h1>
         <p class="page-subtitle">{{ __('Başarı projelerimiz ve iş ortaklarımız') }}</p>
     </div>
 </section>
@@ -28,22 +28,22 @@
                         <div class="reference-image">
                             @if(isset($referans['fields']['resim'][0]))
                                 <img src="{{ getImageLink($referans['fields']['resim'][0]['path'], ['w' => 300, 'h' => 200, 'q' => 90, 'fit' => 'contain']) }}"
-                                     alt="{{ $referans['name'] }}"
+                                     alt="{!! $referans['name'] !!}"
                                      loading="lazy">
                             @elseif(isset($referans['fields']['logo'][0]))
                                 <img src="{{ getImageLink($referans['fields']['logo'][0]['path'], ['w' => 300, 'h' => 200, 'q' => 90, 'fit' => 'contain']) }}"
-                                     alt="{{ $referans['name'] }}"
+                                     alt="{!! $referans['name'] !!}"
                                      loading="lazy">
                             @else
                                 <div class="reference-name-display">
-                                    <h3>{{ $referans['name'] }}</h3>
+                                    <h3>{!! $referans['name'] !!}</h3>
                                 </div>
                             @endif
                         </div>
                         <div class="reference-info">
                             <h3 class="reference-name">{{ $referans['name'] }}</h3>
                             @if(getValue('sektor', $referans))
-                                <span class="reference-sector">{{ getValue('sektor', $referans) }}</span>
+                                <span class="reference-sector">{!! getValue('sektor', $referans) !!}</span>
                             @endif
                         </div>
                     </div>
@@ -55,7 +55,7 @@
                             <button class="ref-close-page" onclick="closeReferenceModal({{ $referans['id'] }})">
                                 <i class="fas fa-times"></i>
                             </button>
-                            <h3>{{ $referans['name'] }}</h3>
+                            <h3>{!! $referans['name'] !!}</h3>
                             @php
                                 $detay = getValue('Detay', $referans) ?: getValue('detay', $referans);
                             @endphp

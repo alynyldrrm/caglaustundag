@@ -28,7 +28,7 @@
             <div class="about-grid">
                 <div class="about-content">
                     <span class="section-label"><?php echo e(__('Hakkımızda')); ?></span>
-                    <h2 class="section-title"><?php echo e(getValue('baslik', $homeSection)); ?></h2>
+                    <h2 class="section-title"><?php echo getValue('baslik', $homeSection); ?></h2>
                     <div class="about-text">
                         <?php echo substr(getValue('icerik', $homeSection), 0, 400); ?>...
                     </div>
@@ -39,7 +39,7 @@
                     </a>
                 </div>
                 <div class="about-image">
-                    <img src="<?php echo e($resim); ?>" alt="<?php echo e(getValue('baslik', $homeSection)); ?>">
+                    <img src="<?php echo e($resim); ?>" alt="<?php echo getValue('baslik', $homeSection); ?>">
                 </div>
             </div>
         </div>
@@ -65,9 +65,9 @@
                             <i class="fas fa-briefcase"></i>
                         <?php endif; ?>
                     </div>
-                    <h3 class="service-name"><?php echo e($hizmet['name']); ?></h3>
+                    <h3 class="service-name"><?php echo $hizmet['name']; ?></h3>
                     <?php if(getValue('kisa_aciklama', $hizmet)): ?>
-                        <p class="service-desc"><?php echo e(substr(getValue('kisa_aciklama', $hizmet), 0, 100)); ?>...</p>
+                        <p class="service-desc"><?php echo substr(getValue('kisa_aciklama', $hizmet), 0, 100); ?>...</p>
                     <?php endif; ?>
                 </a>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -98,10 +98,10 @@
                 <div class="reference-item" onclick="openRefModal(<?php echo e($referans['id']); ?>)">
                     <?php if(isset($referans['fields']['resim'][0])): ?>
                         <img src="<?php echo e(getImageLink($referans['fields']['resim'][0]['path'], ['w' => 200, 'h' => 120, 'q' => 90, 'fit' => 'contain'])); ?>"
-                             alt="<?php echo e($referans['name']); ?>">
+                             alt="<?php echo $referans['name']; ?>">
                     <?php else: ?>
                         <div class="reference-name">
-                            <?php echo e($referans['name']); ?>
+                            <?php echo $referans['name']; ?>
 
                         </div>
                     <?php endif; ?>
@@ -114,7 +114,7 @@
                         <button class="ref-close" onclick="closeRefModal(<?php echo e($referans['id']); ?>)">
                             <i class="fas fa-times"></i>
                         </button>
-                        <h3><?php echo e($referans['name']); ?></h3>
+                        <h3><?php echo $referans['name']; ?></h3>
                         <?php $detay = getValue('Detay', $referans) ?: getValue('detay', $referans); ?>
                         <?php if($detay): ?>
                             <p><?php echo $detay; ?></p>

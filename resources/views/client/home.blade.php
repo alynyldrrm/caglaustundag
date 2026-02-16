@@ -28,7 +28,7 @@
             <div class="about-grid">
                 <div class="about-content">
                     <span class="section-label">{{ __('Hakkımızda') }}</span>
-                    <h2 class="section-title">{{ getValue('baslik', $homeSection) }}</h2>
+                    <h2 class="section-title">{!! getValue('baslik', $homeSection) !!}</h2>
                     <div class="about-text">
                         {!! substr(getValue('icerik', $homeSection), 0, 400) !!}...
                     </div>
@@ -38,7 +38,7 @@
                     </a>
                 </div>
                 <div class="about-image">
-                    <img src="{{ $resim }}" alt="{{ getValue('baslik', $homeSection) }}">
+                    <img src="{{ $resim }}" alt="{!! getValue('baslik', $homeSection) !!}">
                 </div>
             </div>
         </div>
@@ -64,9 +64,9 @@
                             <i class="fas fa-briefcase"></i>
                         @endif
                     </div>
-                    <h3 class="service-name">{{ $hizmet['name'] }}</h3>
+                    <h3 class="service-name">{!! $hizmet['name'] !!}</h3>
                     @if(getValue('kisa_aciklama', $hizmet))
-                        <p class="service-desc">{{ substr(getValue('kisa_aciklama', $hizmet), 0, 100) }}...</p>
+                        <p class="service-desc">{!! substr(getValue('kisa_aciklama', $hizmet), 0, 100) !!}...</p>
                     @endif
                 </a>
                 @endforeach
@@ -96,10 +96,10 @@
                 <div class="reference-item" onclick="openRefModal({{ $referans['id'] }})">
                     @if(isset($referans['fields']['resim'][0]))
                         <img src="{{ getImageLink($referans['fields']['resim'][0]['path'], ['w' => 200, 'h' => 120, 'q' => 90, 'fit' => 'contain']) }}"
-                             alt="{{ $referans['name'] }}">
+                             alt="{!! $referans['name'] !!}">
                     @else
                         <div class="reference-name">
-                            {{ $referans['name'] }}
+                            {!! $referans['name'] !!}
                         </div>
                     @endif
                 </div>
@@ -111,7 +111,7 @@
                         <button class="ref-close" onclick="closeRefModal({{ $referans['id'] }})">
                             <i class="fas fa-times"></i>
                         </button>
-                        <h3>{{ $referans['name'] }}</h3>
+                        <h3>{!! $referans['name'] !!}</h3>
                         @php $detay = getValue('Detay', $referans) ?: getValue('detay', $referans); @endphp
                         @if($detay)
                             <p>{!! $detay !!}</p>

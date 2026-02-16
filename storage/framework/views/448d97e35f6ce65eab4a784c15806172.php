@@ -14,7 +14,7 @@
 <?php $__env->startSection('content'); ?>
 <section class="page-header">
     <div class="container">
-        <h1 class="page-title"><?php echo e($menu->name ?? __('Referanslar')); ?></h1>
+        <h1 class="page-title"><?php echo $menu->name ?? __('Referanslar'); ?></h1>
         <p class="page-subtitle"><?php echo e(__('Başarı projelerimiz ve iş ortaklarımız')); ?></p>
     </div>
 </section>
@@ -28,22 +28,22 @@
                         <div class="reference-image">
                             <?php if(isset($referans['fields']['resim'][0])): ?>
                                 <img src="<?php echo e(getImageLink($referans['fields']['resim'][0]['path'], ['w' => 300, 'h' => 200, 'q' => 90, 'fit' => 'contain'])); ?>"
-                                     alt="<?php echo e($referans['name']); ?>"
+                                     alt="<?php echo $referans['name']; ?>"
                                      loading="lazy">
                             <?php elseif(isset($referans['fields']['logo'][0])): ?>
                                 <img src="<?php echo e(getImageLink($referans['fields']['logo'][0]['path'], ['w' => 300, 'h' => 200, 'q' => 90, 'fit' => 'contain'])); ?>"
-                                     alt="<?php echo e($referans['name']); ?>"
+                                     alt="<?php echo $referans['name']; ?>"
                                      loading="lazy">
                             <?php else: ?>
                                 <div class="reference-name-display">
-                                    <h3><?php echo e($referans['name']); ?></h3>
+                                    <h3><?php echo $referans['name']; ?></h3>
                                 </div>
                             <?php endif; ?>
                         </div>
                         <div class="reference-info">
                             <h3 class="reference-name"><?php echo e($referans['name']); ?></h3>
                             <?php if(getValue('sektor', $referans)): ?>
-                                <span class="reference-sector"><?php echo e(getValue('sektor', $referans)); ?></span>
+                                <span class="reference-sector"><?php echo getValue('sektor', $referans); ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
                             <button class="ref-close-page" onclick="closeReferenceModal(<?php echo e($referans['id']); ?>)">
                                 <i class="fas fa-times"></i>
                             </button>
-                            <h3><?php echo e($referans['name']); ?></h3>
+                            <h3><?php echo $referans['name']; ?></h3>
                             <?php
                                 $detay = getValue('Detay', $referans) ?: getValue('detay', $referans);
                             ?>

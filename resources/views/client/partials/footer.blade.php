@@ -27,19 +27,19 @@
                             @if($contact->address)
                             <li>
                                 <i class="fas fa-map-marker-alt"></i>
-                                <span>{{ $contact->address }}</span>
+                                <span>{!! $contact->address !!}</span>
                             </li>
                             @endif
                             @if($contact->phone)
                             <li>
                                 <i class="fas fa-phone"></i>
-                                <a href="tel:{{ $contact->phone }}">{{ $contact->phone }}</a>
+                                <a href="tel:{{ $contact->phone }}">{!! $contact->phone !!}</a>
                             </li>
                             @endif
                             @if($contact->email)
                             <li>
                                 <i class="fas fa-envelope"></i>
-                                <a href="mailto:{{ $contact->email }}">{{ $contact->email }}</a>
+                                <a href="mailto:{{ $contact->email }}">{!! $contact->email !!}</a>
                             </li>
                             @endif
                         </ul>
@@ -54,7 +54,7 @@
                             @foreach ($menus->take(5) as $menu)
                                 <li>
                                     <a href="{{ $menu['url'] == '' ? route('showPage', [$menu['language']['key'], $menu['permalink']]) : $menu['url'] }}">
-                                        {{ $menu->name }}
+                                        {!! $menu->name !!}
                                     </a>
                                 </li>
                             @endforeach

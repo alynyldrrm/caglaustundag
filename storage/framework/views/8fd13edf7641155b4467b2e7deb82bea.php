@@ -44,16 +44,16 @@
                 <!-- İÇERİK -->
                 <div class="slide-content <?php echo e($pozisyon_class); ?>">
                     <?php if($baslik): ?>
-                        <h2 class="slide-title"><?php echo e($baslik); ?></h2>
+                        <h2 class="slide-title"><?php echo $baslik; ?></h2>
                     <?php endif; ?>
 
                     <?php if($icerik): ?>
-                        <p class="slide-text"><?php echo e($icerik); ?></p>
+                        <p class="slide-text"><?php echo $icerik; ?></p>
                     <?php endif; ?>
 
                     <?php if($buton_varmi && $buton_metin): ?>
                         <a href="<?php echo e($buton_link); ?>" class="slide-btn">
-                            <?php echo e($buton_metin); ?>
+                            <?php echo $buton_metin; ?>
 
                             <i class="fas fa-arrow-right"></i>
                         </a>
