@@ -1,0 +1,18 @@
+/node_modules
+/storage/*.key
+/vendor
+.env.backup
+.env
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+# /public/files/**/*
+/public/cache/**/*
+!.gitkeep
+# /lang/*.json
+/bootstrap/cache
