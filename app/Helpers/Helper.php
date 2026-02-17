@@ -378,12 +378,15 @@ function getFormDetail($form_id)
 }
 function getValueList(Menu $menu)
 {
+    $data = [];
+    
+    // Ana menüye bağlı value'ları getir
     $pivot = MenuValue::join('values', 'menu_values.value_id', 'values.id')
         ->with(['value', 'type'])
         ->where('menu_id', $menu->id)
         ->orderBy("values.sort")
         ->get();
-    $data = [];
+    
     foreach ($pivot as $item) {
         if ($item->type->model == "App\Models\Form") {
             $data[] = getFormDetail($item->value_id);
@@ -391,6 +394,14 @@ function getValueList(Menu $menu)
             $data[] = getValueDetail($item->value);
         }
     }
+    
+    // Alt menülerdeki value'ları recursive olarak getir
+    $childMenus = Menu::where('parent_id', $menu->id)->get();
+    foreach ($childMenus as $childMenu) {
+        $childData = getValueList($childMenu);
+        $data = array_merge($data, $childData);
+    }
+    
     return $data;
 }
 //eklenme tarihinden itibaren 1 gün geçmiş ve herhangi bir girdiye bağlanmamış olan resimleri veritabanı ve kayıtlı olduğu klasörden siliyor!

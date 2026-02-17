@@ -30,6 +30,26 @@ class ClientController extends Controller
             ->where('permalink', $menu_permalink)
             ->where('language_id', $language->id)
             ->first();
+        
+        // Eğer menü bulunamazsa, varsayılan dilde (TR) aynı permalink ile ara ve kardeş menüyü getir
+        if (!$menu) {
+            $defaultLanguage = Language::where('is_default', true)->first();
+            if ($defaultLanguage && $defaultLanguage->id != $language->id) {
+                $defaultMenu = Menu::with('type')
+                    ->where('permalink', $menu_permalink)
+                    ->where('language_id', $defaultLanguage->id)
+                    ->first();
+                
+                if ($defaultMenu) {
+                    // Kardeş menüyü (mevcut dildeki karşılığını) bul
+                    $menu = Menu::with('type')
+                        ->where('brother_id', $defaultMenu->brother_id)
+                        ->where('language_id', $language->id)
+                        ->first();
+                }
+            }
+        }
+        
         if (!$menu) {
             abort(404);
             return redirect()->route('clientHome', App::getLocale());

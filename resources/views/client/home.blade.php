@@ -3,7 +3,7 @@
 
 @php
     $homeSections = getTypeValues('sayfalar', 1);
-    $homeSection = count($homeSections) > 0 ? $homeSections[0] : null;
+    $homeSection  = count($homeSections) > 0 ? $homeSections[0] : null;
 
     if ($homeSection) {
         $resim = isset($homeSection['fields']['gorsel'][0])
@@ -11,100 +11,133 @@
             : '/assets/client/img/style-switcher.png';
     }
 
-    // Hizmetler (ilk 4) - Tip permalink'i ile çek
-    $hizmetler = getTypeValues('hizmetler', 4);
-
-    // Referanslar (ilk 5) - Tip permalink'i ile çek
+    $hizmetler   = getTypeValues('hizmetler', 100);  // tümünü çek, sonra slice et
     $referanslar = getTypeValues('referanslar', 5);
+
+    // Hizmetler liste sayfası URL'si
+    // getMenus() tüm nav menülerini döner (parent + children birlikte)
+    // parent_id null olanlar ana menü, dolu olanlar alt menü
+    $hizmetlerMenuUrl   = '';
+    $referanslarMenuUrl = '';
+    $langKey            = App::getLocale();
+
+    foreach(getMenus() as $menuItem) {
+        // Ana menü (parent_id yok veya 0) ve type hizmetler
+        if(empty($menuItem['parent_id'])) {
+            $name = strtolower(strip_tags($menuItem['name'] ?? ''));
+            $perm = $menuItem['permalink'] ?? '';
+            $lang = $menuItem['language']['key'] ?? $langKey;
+
+            if(stripos($name, 'hizmet') !== false || stripos($perm, 'hizmet') !== false) {
+                $hizmetlerMenuUrl = route('showPage', [$lang, $perm]);
+            }
+            if(stripos($name, 'referans') !== false || stripos($perm, 'referans') !== false) {
+                $referanslarMenuUrl = route('showPage', [$lang, $perm]);
+            }
+        }
+    }
 @endphp
 
 @section('content')
+
     @include('client.partials.slider')
 
-    {{-- Hakkımızda Bölümü --}}
+    {{-- Hakkımızda --}}
     @if($homeSection)
-    <section class="home-about">
+    <section class="ha-about">
         <div class="container">
-            <div class="about-grid">
-                <div class="about-content">
-                    <span class="section-label">{{ __('Hakkımızda') }}</span>
-                    <h2 class="section-title">{!! getValue('baslik', $homeSection) !!}</h2>
-                    <div class="about-text">
+            <div class="ha-about__grid">
+                <div class="ha-about__content">
+                    <span class="ha-eyebrow">{{ __('Hakkımızda') }}</span>
+                    <h2 class="ha-title">{!! getValue('baslik', $homeSection) !!}</h2>
+                    <div class="ha-about__text">
                         {!! substr(getValue('icerik', $homeSection), 0, 400) !!}...
                     </div>
-                    <a href="/{{ App::getLocale() }}/hakkimizda" class="btn btn-primary">
+                    <a href="/{{ App::getLocale() }}/hakkimizda" class="ha-btn ha-btn--dark">
                         {{ __('Devamını Gör') }}
-                        <i class="fas fa-arrow-right"></i>
+                        <span class="ha-btn__arr"><i class="fas fa-arrow-right"></i></span>
                     </a>
                 </div>
-                <div class="about-image">
+                <div class="ha-about__img">
                     <img src="{{ $resim }}" alt="{!! getValue('baslik', $homeSection) !!}">
+                    <div class="ha-about__img-deco"></div>
                 </div>
             </div>
         </div>
     </section>
     @endif
 
-    {{-- Hizmetler Bölümü --}}
+    {{-- Hizmetler --}}
     @if(count($hizmetler) > 0)
-    <section class="home-services">
+    <section class="ha-services">
         <div class="container">
-            <div class="section-header">
-                <span class="section-label">{{ __('Hizmetlerimiz') }}</span>
-                <h2 class="section-title">{{ __('Profesyonel Çözümler') }}</h2>
+            <div class="ha-section-head">
+                <div>
+                    <span class="ha-eyebrow">{{ __('Hizmetlerimiz') }}</span>
+                    <h2 class="ha-title">{{ __('Profesyonel Çözümler') }}</h2>
+                </div>
+                @if($hizmetlerMenuUrl)
+                <a href="{{ $hizmetlerMenuUrl }}" class="ha-btn ha-btn--outline ha-btn--sm">
+                    {{ __('Tüm Hizmetleri Gör') }}
+                    <span class="ha-btn__arr"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                @endif
             </div>
-
-            <div class="services-grid">
-                @foreach($hizmetler as $hizmet)
-                <a href="/{{ App::getLocale() }}/hizmetlerimiz/{{ $hizmet['permalink'] }}" class="service-card">
-                    <div class="service-icon">
+            <div class="ha-services__grid">
+                @foreach(array_slice($hizmetler, 0, 4) as $index => $hizmet)
+                @php
+                    $hMenuPermalink = $hizmet['menu']['permalink'] ?? '';
+                    $hLangKey       = $hizmet['language']['key'] ?? App::getLocale();
+                @endphp
+                <a href="{{ route('showPage', [$hLangKey, $hMenuPermalink, $hizmet['permalink']]) }}" class="ha-scard">
+                    <span class="ha-scard__num">{{ sprintf('%02d', $index + 1) }}</span>
+                    <div class="ha-scard__ico">
                         @if(isset($hizmet['fields']['icon'][0]))
                             <img src="{{ getImageLink($hizmet['fields']['icon'][0]['path'], ['w' => 60, 'h' => 60, 'fit' => 'contain']) }}" alt="">
                         @else
                             <i class="fas fa-briefcase"></i>
                         @endif
                     </div>
-                    <h3 class="service-name">{!! $hizmet['name'] !!}</h3>
+                    <h3 class="ha-scard__name">{!! $hizmet['name'] !!}</h3>
                     @if(getValue('kisa_aciklama', $hizmet))
-                        <p class="service-desc">{!! substr(getValue('kisa_aciklama', $hizmet), 0, 100) !!}...</p>
+                        <p class="ha-scard__desc">{!! substr(getValue('kisa_aciklama', $hizmet), 0, 100) !!}...</p>
                     @endif
+                    <span class="ha-scard__link">{{ __('Detay') }} <i class="fas fa-arrow-right"></i></span>
                 </a>
                 @endforeach
-            </div>
-
-            <div class="section-footer">
-                <a href="/{{ App::getLocale() }}/hizmetlerimiz" class="btn btn-outline">
-                    {{ __('Tüm Hizmetleri Gör') }}
-                    <i class="fas fa-arrow-right"></i>
-                </a>
             </div>
         </div>
     </section>
     @endif
 
-    {{-- Referanslar Bölümü --}}
+    {{-- Referanslar --}}
     @if(count($referanslar) > 0)
-    <section class="home-references">
+    <section class="ha-refs">
         <div class="container">
-            <div class="section-header">
-                <span class="section-label">{{ __('Referanslar') }}</span>
-                <h2 class="section-title">{{ __('İş Ortaklarımız') }}</h2>
+            <div class="ha-section-head">
+                <div>
+                    <span class="ha-eyebrow">{{ __('Referanslar') }}</span>
+                    <h2 class="ha-title">{{ __('İş Ortaklarımız') }}</h2>
+                </div>
+                @if($referanslarMenuUrl)
+                <a href="{{ $referanslarMenuUrl }}" class="ha-btn ha-btn--outline ha-btn--sm">
+                    {{ __('Tüm Referansları Gör') }}
+                    <span class="ha-btn__arr"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                @endif
             </div>
-
-            <div class="references-grid">
+            <div class="ha-refs__grid">
                 @foreach($referanslar as $referans)
-                <div class="reference-item" onclick="openRefModal({{ $referans['id'] }})">
+                <div class="ha-ref" onclick="openRefModal({{ $referans['id'] }})">
                     @if(isset($referans['fields']['resim'][0]))
                         <img src="{{ getImageLink($referans['fields']['resim'][0]['path'], ['w' => 200, 'h' => 120, 'q' => 90, 'fit' => 'contain']) }}"
                              alt="{!! $referans['name'] !!}">
                     @else
-                        <div class="reference-name">
-                            {!! $referans['name'] !!}
-                        </div>
+                        <div class="ha-ref__name">{!! $referans['name'] !!}</div>
                     @endif
+                    <div class="ha-ref__overlay"><i class="fas fa-eye"></i></div>
                 </div>
 
-                {{-- Modal --}}
                 <div id="ref-modal-{{ $referans['id'] }}" class="ref-modal">
                     <div class="ref-overlay" onclick="closeRefModal({{ $referans['id'] }})"></div>
                     <div class="ref-content">
@@ -113,43 +146,34 @@
                         </button>
                         <h3>{!! $referans['name'] !!}</h3>
                         @php $detay = getValue('Detay', $referans) ?: getValue('detay', $referans); @endphp
-                        @if($detay)
-                            <p>{!! $detay !!}</p>
-                        @endif
+                        @if($detay)<p>{!! $detay !!}</p>@endif
                     </div>
                 </div>
                 @endforeach
-            </div>
-
-            <div class="section-footer">
-                <a href="/{{ App::getLocale() }}/referanslar" class="btn btn-outline">
-                    {{ __('Tüm Referansları Gör') }}
-                    <i class="fas fa-arrow-right"></i>
-                </a>
             </div>
         </div>
     </section>
     @endif
 
     {{-- İstatistikler --}}
-    <section class="home-stats">
+    <section class="ha-stats">
         <div class="container">
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <span class="stat-number">10+</span>
-                    <span class="stat-text">{{ __('Yıllık Tecrübe') }}</span>
+            <div class="ha-stats__grid">
+                <div class="ha-stat">
+                    <span class="ha-stat__num">10+</span>
+                    <span class="ha-stat__lbl">{{ __('Yıllık Tecrübe') }}</span>
                 </div>
-                <div class="stat-box">
-                    <span class="stat-number">500+</span>
-                    <span class="stat-text">{{ __('Mutlu Müşteri') }}</span>
+                <div class="ha-stat">
+                    <span class="ha-stat__num">500+</span>
+                    <span class="ha-stat__lbl">{{ __('Mutlu Müşteri') }}</span>
                 </div>
-                <div class="stat-box">
-                    <span class="stat-number">50+</span>
-                    <span class="stat-text">{{ __('Uzman Kadro') }}</span>
+                <div class="ha-stat">
+                    <span class="ha-stat__num">50+</span>
+                    <span class="ha-stat__lbl">{{ __('Uzman Kadro') }}</span>
                 </div>
-                <div class="stat-box">
-                    <span class="stat-number">1000+</span>
-                    <span class="stat-text">{{ __('Tamamlanan Proje') }}</span>
+                <div class="ha-stat">
+                    <span class="ha-stat__num">1000+</span>
+                    <span class="ha-stat__lbl">{{ __('Tamamlanan Proje') }}</span>
                 </div>
             </div>
         </div>
@@ -157,359 +181,477 @@
 
     <script>
     function openRefModal(id) {
-        const modal = document.getElementById('ref-modal-' + id);
-        if(modal) modal.style.display = 'flex';
+        const m = document.getElementById('ref-modal-' + id);
+        if(m) { m.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
     }
     function closeRefModal(id) {
-        const modal = document.getElementById('ref-modal-' + id);
-        if(modal) modal.style.display = 'none';
+        const m = document.getElementById('ref-modal-' + id);
+        if(m) { m.style.display = 'none'; document.body.style.overflow = ''; }
     }
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', e => {
         if(e.key === 'Escape') {
-            document.querySelectorAll('.ref-modal').forEach(m => m.style.display = 'none');
+            document.querySelectorAll('.ref-modal').forEach(m => { m.style.display = 'none'; });
+            document.body.style.overflow = '';
         }
     });
     </script>
 @endsection
 
 @section('css')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
-/* Genel Section Stilleri */
-.section-label {
-    display: inline-block;
-    font-size: 0.85rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: #999;
-    margin-bottom: 15px;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --bg:       #f8f7f4;
+    --white:    #ffffff;
+    --ink:      #1c1c1c;
+    --ink-2:    #555550;
+    --ink-3:    #9a9891;
+    --border:   #e4e2dc;
+    --border-2: #ccc9c0;
+    --accent:   #2a3d52;
+    --accent-l: rgba(42,61,82,0.06);
+    --accent-m: rgba(42,61,82,0.12);
 }
 
-.section-title {
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin-bottom: 15px;
-    line-height: 1.2;
+/* ─── base ─── */
+.ha-about, .ha-services, .ha-refs, .ha-stats,
+.ha-about *, .ha-services *, .ha-refs *, .ha-stats * {
+    font-family: 'Outfit', sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
-.section-header {
-    text-align: center;
-    margin-bottom: 50px;
-}
+.container { width: min(1140px, 92vw); margin-inline: auto; }
 
-.section-footer {
-    text-align: center;
-    margin-top: 40px;
-}
-
-/* Butonlar */
-.btn {
+/* ─── shared atoms ─── */
+.ha-eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 28px;
+    font-size: .68rem;
+    font-weight: 500;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+}
+
+.ha-eyebrow::before {
+    content: '';
+    display: block;
+    width: 26px; height: 1px;
+    background: var(--accent);
+    opacity: .5;
+}
+
+.ha-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    line-height: 1.12;
+    color: var(--ink);
+    letter-spacing: -.015em;
+    margin-bottom: 0;
+}
+
+.ha-section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 44px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* ─── buttons ─── */
+.ha-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 26px;
+    border-radius: 8px;
+    font-size: .875rem;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.3s;
-    border-radius: 4px;
+    transition: all .22s;
+    white-space: nowrap;
+    letter-spacing: .02em;
 }
 
-.btn-primary {
-    background: #1a1a1a;
+.ha-btn--dark {
+    background: var(--accent);
     color: #fff;
-    border: 2px solid #1a1a1a;
+    border: 1px solid var(--accent);
 }
 
-.btn-primary:hover {
-    background: #333;
+.ha-btn--dark:hover {
+    background: #1e2e3f;
+    box-shadow: 0 8px 28px var(--accent-m);
+    transform: translateY(-2px);
     color: #fff;
+    text-decoration: none;
 }
 
-.btn-outline {
+.ha-btn--outline {
     background: transparent;
-    color: #1a1a1a;
-    border: 2px solid #1a1a1a;
+    color: var(--accent);
+    border: 1px solid var(--accent-m);
 }
 
-.btn-outline:hover {
-    background: #1a1a1a;
+.ha-btn--outline:hover {
+    background: var(--accent);
     color: #fff;
+    border-color: var(--accent);
+    text-decoration: none;
 }
 
-/* Hakkımızda */
-.home-about {
+.ha-btn--sm { padding: 10px 20px; font-size: .78rem; }
+
+.ha-btn__arr {
+    width: 24px; height: 24px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .7rem;
+    transition: transform .2s;
+}
+
+.ha-btn--dark .ha-btn__arr   { background: rgba(255,255,255,.15); }
+.ha-btn--outline .ha-btn__arr { background: var(--accent-l); }
+
+.ha-btn:hover .ha-btn__arr { transform: translateX(4px); }
+.ha-btn--outline:hover .ha-btn__arr { background: rgba(255,255,255,.15); }
+
+/* ═══════════════════════════════════
+   HAKKIMIZDA
+═══════════════════════════════════ */
+.ha-about {
     padding: 100px 0;
-    background: #fff;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
 }
 
-.about-grid {
+.ha-about__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 80px;
     align-items: center;
 }
 
-.about-text {
-    font-size: 1.05rem;
-    color: #666;
+.ha-about__content { display: flex; flex-direction: column; gap: 0; }
+
+.ha-about__content .ha-title { margin: 0 0 22px; }
+
+.ha-about__text {
+    font-size: 1rem;
+    color: var(--ink-2);
     line-height: 1.8;
-    margin-bottom: 30px;
+    font-weight: 300;
+    margin-bottom: 32px;
 }
 
-.about-image {
-    border-radius: 8px;
+.ha-about__img {
+    position: relative;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
 }
 
-.about-image img {
+.ha-about__img img {
     width: 100%;
     display: block;
+    border-radius: 12px;
+    border: 1px solid var(--border);
 }
 
-/* Hizmetler */
-.home-services {
+.ha-about__img-deco {
+    position: absolute;
+    inset: -8px -8px auto auto;
+    width: 120px; height: 120px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* ═══════════════════════════════════
+   HİZMETLER
+═══════════════════════════════════ */
+.ha-services {
     padding: 100px 0;
-    background: #f8f9fa;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
 }
 
-.services-grid {
+.ha-services__grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
+    gap: 20px;
 }
 
-.service-card {
-    background: #fff;
+.ha-scard {
+    background: var(--white);
+    border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 35px 25px;
-    text-align: center;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
     text-decoration: none;
     color: inherit;
-    transition: all 0.3s;
-    border: 1px solid #e5e5e5;
+    transition: transform .26s ease, box-shadow .26s ease, border-color .26s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.service-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    border-color: #1a1a1a;
+.ha-scard::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--accent);
+    transition: width .3s ease;
 }
 
-.service-icon {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f0f0f0;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    color: #1a1a1a;
+.ha-scard:hover { transform: translateY(-5px); box-shadow: 0 16px 44px rgba(42,61,82,.1); border-color: var(--border-2); text-decoration: none; color: inherit; }
+.ha-scard:hover::after { width: 100%; }
+
+.ha-scard__num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 300;
+    color: var(--accent);
+    opacity: .35;
+    margin-bottom: 16px;
+    line-height: 1;
 }
 
-.service-icon img {
-    max-width: 30px;
-    max-height: 30px;
-}
-
-.service-name {
+.ha-scard__ico {
+    width: 44px; height: 44px;
+    background: var(--accent-l);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
     font-size: 1.1rem;
-    font-weight: 600;
-    color: #1a1a1a;
+    margin-bottom: 16px;
+    transition: background .2s;
+}
+
+.ha-scard:hover .ha-scard__ico { background: var(--accent-m); }
+
+.ha-scard__ico img { max-width: 22px; max-height: 22px; }
+
+.ha-scard__name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--ink);
     margin-bottom: 10px;
+    line-height: 1.35;
 }
 
-.service-desc {
-    font-size: 0.9rem;
-    color: #666;
-    margin: 0;
+.ha-scard__desc {
+    font-size: .85rem;
+    color: var(--ink-2);
+    line-height: 1.6;
+    font-weight: 300;
+    flex: 1;
+    margin-bottom: 20px;
 }
 
-/* Referanslar */
-.home-references {
+.ha-scard__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: auto;
+    transition: gap .2s;
+}
+
+.ha-scard:hover .ha-scard__link { gap: 11px; }
+
+/* ═══════════════════════════════════
+   REFERANSLAR
+═══════════════════════════════════ */
+.ha-refs {
     padding: 100px 0;
-    background: #fff;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
 }
 
-.references-grid {
+.ha-refs__grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 30px;
+    gap: 18px;
 }
 
-.reference-item {
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 8px;
+.ha-ref {
+    position: relative;
+    height: 96px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 18px;
     cursor: pointer;
-    transition: all 0.3s;
-    border: 1px solid #e5e5e5;
+    overflow: hidden;
+    transition: border-color .22s, box-shadow .22s;
 }
 
-.reference-item:hover {
-    background: #fff;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-}
+.ha-ref:hover { border-color: var(--border-2); box-shadow: 0 8px 24px rgba(42,61,82,.08); }
 
-.reference-item img {
-    max-width: 100%;
-    max-height: 100%;
+.ha-ref img {
+    max-width: 100%; max-height: 100%;
     object-fit: contain;
+    filter: grayscale(1) opacity(.65);
+    transition: filter .3s;
 }
 
-.reference-placeholder {
-    font-size: 2rem;
-    color: #ccc;
-}
+.ha-ref:hover img { filter: grayscale(0) opacity(1); }
 
-.reference-name {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333;
+.ha-ref__name {
+    font-size: .85rem;
+    font-weight: 500;
+    color: var(--ink-2);
     text-align: center;
-    line-height: 1.3;
+    line-height: 1.4;
 }
 
-/* Referans Modal */
+.ha-ref__overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: .9rem;
+    opacity: 0;
+    transition: opacity .25s;
+}
+
+.ha-ref:hover .ha-ref__overlay { opacity: .85; }
+
+/* Modal */
 .ref-modal {
     display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    position: fixed; inset: 0;
     z-index: 1000;
-    align-items: center;
-    justify-content: center;
+    align-items: center; justify-content: center;
 }
 
 .ref-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.7);
+    position: absolute; inset: 0;
+    background: rgba(28,28,28,.55);
+    backdrop-filter: blur(4px);
 }
 
 .ref-content {
     position: relative;
-    background: #fff;
-    padding: 40px;
-    border-radius: 12px;
-    max-width: 500px;
-    width: 90%;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 44px;
+    max-width: 520px; width: 90%;
     z-index: 1001;
+    box-shadow: 0 32px 80px rgba(28,28,28,.16);
 }
 
 .ref-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 35px;
-    height: 35px;
-    border: none;
-    background: #f0f0f0;
+    position: absolute; top: 18px; right: 18px;
+    width: 34px; height: 34px;
+    border: 1px solid var(--border);
+    background: var(--bg);
     border-radius: 50%;
     cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-3); font-size: .75rem;
+    transition: all .2s;
 }
 
+.ref-close:hover { border-color: var(--accent); color: var(--accent); }
+
 .ref-content h3 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: #1a1a1a;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-weight: 400;
+    color: var(--ink); margin-bottom: 18px;
+    padding-bottom: 18px; border-bottom: 1px solid var(--border);
+    letter-spacing: -.01em; line-height: 1.2;
 }
 
 .ref-content p {
-    color: #333;
-    line-height: 1.6;
+    font-size: .92rem; color: var(--ink-2);
+    line-height: 1.75; font-weight: 300;
 }
 
-/* İstatistikler */
-.home-stats {
+/* ═══════════════════════════════════
+   İSTATİSTİKLER
+═══════════════════════════════════ */
+.ha-stats {
     padding: 80px 0;
-    background: #1a1a1a;
-    color: #fff;
+    background: var(--accent);
+    border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
-.stats-grid {
+.ha-stats__grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 40px;
+    gap: 0;
 }
 
-.stat-box {
+.ha-stat {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 12px 20px;
+    border-right: 1px solid rgba(255,255,255,.12);
     text-align: center;
 }
 
-.stat-number {
+.ha-stat:last-child { border-right: none; }
+
+.ha-stat__num {
     display: block;
-    font-size: 3rem;
-    font-weight: 700;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 4vw, 4rem);
+    font-weight: 300;
     color: #fff;
     line-height: 1;
     margin-bottom: 10px;
+    letter-spacing: -.02em;
 }
 
-.stat-text {
-    font-size: 0.9rem;
-    color: #999;
+.ha-stat__lbl {
+    font-size: .68rem;
+    font-weight: 500;
+    letter-spacing: .14em;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    color: rgba(255,255,255,.55);
 }
 
-/* Responsive */
+/* ─── responsive ─── */
+@media (max-width: 1100px) {
+    .ha-services__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media (max-width: 1024px) {
-    .about-grid {
-        grid-template-columns: 1fr;
-        gap: 50px;
-    }
-
-    .about-image {
-        order: -1;
-    }
-
-    .services-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .references-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .ha-about__grid { grid-template-columns: 1fr; gap: 48px; }
+    .ha-about__img  { order: -1; }
+    .ha-refs__grid  { grid-template-columns: repeat(3, 1fr); }
+    .ha-stats__grid { grid-template-columns: repeat(2, 1fr); }
+    .ha-stat        { border-bottom: 1px solid rgba(255,255,255,.12); padding: 28px 20px; }
+    .ha-stat:nth-child(2), .ha-stat:last-child { border-right: none; }
 }
 
 @media (max-width: 768px) {
-    .section-title {
-        font-size: 1.8rem;
-    }
-
-    .services-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .references-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-
-    .stat-number {
-        font-size: 2.5rem;
-    }
+    .ha-about, .ha-services, .ha-refs { padding: 70px 0; }
+    .ha-section-head { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .ha-services__grid { grid-template-columns: 1fr; }
+    .ha-refs__grid  { grid-template-columns: repeat(2, 1fr); }
+    .ha-stats__grid { grid-template-columns: 1fr; }
+    .ha-stat        { border-right: none; }
+    .ref-content    { padding: 30px 22px; }
 }
 </style>
 @endsection

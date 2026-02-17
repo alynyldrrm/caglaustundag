@@ -27,7 +27,7 @@
                 <span>/</span>
                 <a href="/<?php echo e(App::getLocale()); ?>/haberler"><?php echo e(__('Haberler')); ?></a>
                 <span>/</span>
-                <span class="current"><?php echo e($baslik); ?></span>
+                <span class="current"><?php echo $baslik; ?></span>
             </nav>
         </div>
     </section>
@@ -38,7 +38,7 @@
                 <?php if(isset($detail['fields']['resim'][0])): ?>
                     <div class="news-hero-image">
                         <img src="<?php echo e(getImageLink($detail['fields']['resim'][0]['path'], ['w' => 1200, 'h' => 600, 'q' => 90, 'fit' => 'cover'])); ?>" 
-                             alt="<?php echo e($baslik); ?>">
+                             alt="<?php echo $baslik; ?>">
                     </div>
                 <?php endif; ?>
                 
@@ -47,13 +47,13 @@
                         <div class="news-meta">
                             <span class="news-date-badge">
                                 <i class="fas fa-calendar-alt"></i>
-                                <?php echo e($tarih); ?>
+                                <?php echo $tarih; ?>
 
                             </span>
                         </div>
                     <?php endif; ?>
                     
-                    <h1 class="news-article-title"><?php echo e($baslik); ?></h1>
+                    <h1 class="news-article-title"><?php echo $baslik; ?></h1>
                     
                     <?php if($icerik): ?>
                         <div class="news-article-text">
@@ -82,7 +82,7 @@
     <?php $__env->startSection('content'); ?>
     <section class="page-header">
         <div class="container">
-            <h1 class="page-title"><?php echo e($menu->name ?? __('Haberler')); ?></h1>
+            <h1 class="page-title"><?php echo $menu->name ?? __('Haberler'); ?></h1>
             <p class="page-subtitle"><?php echo e(__('Güncel haber ve duyurularımız')); ?></p>
         </div>
     </section>
@@ -97,7 +97,7 @@
                                 <div class="news-image">
                                     <?php if(isset($haber['fields']['resim'][0])): ?>
                                         <img src="<?php echo e(getImageLink($haber['fields']['resim'][0]['path'], ['w' => 600, 'h' => 400, 'q' => 90, 'fit' => 'cover'])); ?>" 
-                                             alt="<?php echo e($haber['name']); ?>"
+                                             alt="<?php echo $haber['name']; ?>"
                                              loading="lazy">
                                     <?php else: ?>
                                         <div class="news-placeholder">
@@ -109,9 +109,9 @@
                                     <?php endif; ?>
                                 </div>
                                 <div class="news-content">
-                                    <h2 class="news-title"><?php echo e($haber['name']); ?></h2>
+                                    <h2 class="news-title"><?php echo $haber['name']; ?></h2>
                                     <?php if(getValue('icerik', $haber)): ?>
-                                        <p class="news-excerpt"><?php echo e(substr(strip_tags(getValue('icerik', $haber)), 0, 150)); ?>...</p>
+                                        <p class="news-excerpt"><?php echo substr(strip_tags(getValue('icerik', $haber)), 0, 150); ?>...</p>
                                     <?php endif; ?>
                                     <span class="news-read-more">
                                         <?php echo e(__('Devamını Oku')); ?>

@@ -1,7 +1,6 @@
 @php
     $currentLanguage = session('defaultDatas')['currentLanguage'] ?? null;
 
-    // Eğer list boşsa, direkt veritabanından çek
     if(!isset($list) || !is_array($list) || count($list) == 0) {
         $list = getTypeValues('referanslar', 100);
     }
@@ -12,383 +11,445 @@
 @section('title', $menu->name ?? __('Referanslar'))
 
 @section('content')
-<section class="page-header">
-    <div class="container">
-        <h1 class="page-title">{!! $menu->name ?? __('Referanslar') !!}</h1>
-        <p class="page-subtitle">{{ __('Başarı projelerimiz ve iş ortaklarımız') }}</p>
-    </div>
-</section>
 
-<section class="references-section">
-    <div class="container">
-        @if($list && count($list) > 0)
-            <div class="references-grid">
-                @foreach($list as $referans)
-                    <div class="reference-card" onclick="openReferenceModal({{ $referans['id'] }})">
-                        <div class="reference-image">
-                            @if(isset($referans['fields']['resim'][0]))
-                                <img src="{{ getImageLink($referans['fields']['resim'][0]['path'], ['w' => 300, 'h' => 200, 'q' => 90, 'fit' => 'contain']) }}"
-                                     alt="{!! $referans['name'] !!}"
-                                     loading="lazy">
-                            @elseif(isset($referans['fields']['logo'][0]))
-                                <img src="{{ getImageLink($referans['fields']['logo'][0]['path'], ['w' => 300, 'h' => 200, 'q' => 90, 'fit' => 'contain']) }}"
-                                     alt="{!! $referans['name'] !!}"
-                                     loading="lazy">
-                            @else
-                                <div class="reference-name-display">
-                                    <h3>{!! $referans['name'] !!}</h3>
+<div class="rp">
+
+    <!-- Hero -->
+    <section class="rp-hero">
+        <div class="rp-hero__noise"></div>
+        <div class="rp-hero__circles">
+            <span class="rp-hero__c rp-hero__c--1"></span>
+            <span class="rp-hero__c rp-hero__c--2"></span>
+        </div>
+        <div class="container">
+            <div class="rp-hero__inner">
+
+                <h1 class="rp-hero__title">{!! $menu->name ?? __('Referanslar') !!}</h1>
+                <p class="rp-hero__sub">{{ __('Başarı projelerimiz ve iş ortaklarımız') }}</p>
+            </div>
+        </div>
+        <div class="rp-hero__line"></div>
+    </section>
+
+    <!-- Grid -->
+    <section class="rp-main">
+        <div class="container">
+            @if($list && count($list) > 0)
+                <div class="rp-grid">
+                    @foreach($list as $referans)
+                        <div class="rp-card" onclick="openReferenceModal({{ $referans['id'] }})">
+                            <div class="rp-card__img">
+                                @if(isset($referans['fields']['resim'][0]))
+                                    <img src="{{ getImageLink($referans['fields']['resim'][0]['path'], ['w' => 300, 'h' => 200, 'q' => 90, 'fit' => 'contain']) }}"
+                                         alt="{!! $referans['name'] !!}" loading="lazy">
+                                @elseif(isset($referans['fields']['logo'][0]))
+                                    <img src="{{ getImageLink($referans['fields']['logo'][0]['path'], ['w' => 300, 'h' => 200, 'q' => 90, 'fit' => 'contain']) }}"
+                                         alt="{!! $referans['name'] !!}" loading="lazy">
+                                @else
+                                    <div class="rp-card__initials">
+                                        <span>{!! mb_substr(strip_tags($referans['name']), 0, 2) !!}</span>
+                                    </div>
+                                @endif
+                                <div class="rp-card__overlay">
+                                    <span><i class="fas fa-eye"></i></span>
                                 </div>
-                            @endif
+                            </div>
+                            <div class="rp-card__body">
+                                <h3 class="rp-card__name">{{ $referans['name'] }}</h3>
+                                @if(getValue('sektor', $referans))
+                                    <span class="rp-card__tag">{!! getValue('sektor', $referans) !!}</span>
+                                @endif
+                            </div>
                         </div>
-                        <div class="reference-info">
-                            <h3 class="reference-name">{{ $referans['name'] }}</h3>
-                            @if(getValue('sektor', $referans))
-                                <span class="reference-sector">{!! getValue('sektor', $referans) !!}</span>
-                            @endif
-                        </div>
-                    </div>
 
-                    <!-- Modal -->
-                    <div id="reference-modal-{{ $referans['id'] }}" class="ref-modal-page">
-                        <div class="ref-overlay-page" onclick="closeReferenceModal({{ $referans['id'] }})"></div>
-                        <div class="ref-content-page">
-                            <button class="ref-close-page" onclick="closeReferenceModal({{ $referans['id'] }})">
-                                <i class="fas fa-times"></i>
-                            </button>
-                            <h3>{!! $referans['name'] !!}</h3>
-                            @php
-                                $detay = getValue('Detay', $referans) ?: getValue('detay', $referans);
-                            @endphp
-                            @if($detay)
-                                <p>{!! $detay !!}</p>
-                            @endif
+                        <!-- Modal -->
+                        <div id="reference-modal-{{ $referans['id'] }}" class="ref-modal-page">
+                            <div class="ref-overlay-page" onclick="closeReferenceModal({{ $referans['id'] }})"></div>
+                            <div class="ref-content-page">
+                                <button class="ref-close-page" onclick="closeReferenceModal({{ $referans['id'] }})">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <h3>{!! $referans['name'] !!}</h3>
+                                @php
+                                    $detay = getValue('Detay', $referans) ?: getValue('detay', $referans);
+                                @endphp
+                                @if($detay)
+                                    <p>{!! $detay !!}</p>
+                                @endif
+                            </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
-        @else
-            <div class="empty-state">
-                <i class="fas fa-folder-open"></i>
-                <p>{{ __('Henüz referans eklenmemiş.') }}</p>
-            </div>
-        @endif
-    </div>
-</section>
+                    @endforeach
+                </div>
+            @else
+                <div class="rp-empty">
+                    <i class="fas fa-folder-open"></i>
+                    <p>{{ __('Henüz referans eklenmemiş.') }}</p>
+                </div>
+            @endif
+        </div>
+    </section>
+
+</div>
+
 @endsection
 
 @section('css')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 :root {
-    --gradient-primary: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
-    --gradient-secondary: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-    --color-primary: #2d3748;
-    --color-text: #2d3748;
-    --color-text-light: #718096;
-    --shadow-soft: 0 10px 40px rgba(45, 55, 72, 0.15);
-    --shadow-hover: 0 20px 60px rgba(45, 55, 72, 0.25);
+    --bg:       #f8f7f4;
+    --white:    #ffffff;
+    --ink:      #1c1c1c;
+    --ink-2:    #555550;
+    --ink-3:    #9a9891;
+    --border:   #e4e2dc;
+    --border-2: #ccc9c0;
+    --accent:   #2a3d52;
+    --accent-l: rgba(42,61,82,0.06);
+    --accent-m: rgba(42,61,82,0.12);
 }
 
-/* Page Header */
-.page-header {
-    background: var(--gradient-primary);
-    padding: 120px 0 80px;
-    text-align: center;
-    color: #fff;
+.rp {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    width: min(1200px, 92vw);
+    margin-inline: auto;
+}
+
+/* ── Hero ── */
+.rp-hero {
     position: relative;
+    background: var(--white);
+    padding: 130px 0 80px;
+    border-bottom: 1px solid var(--border);
     overflow: hidden;
 }
 
-.page-header::before {
-    content: '';
+.rp-hero__noise {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    inset: 0;
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 39px,
+        rgba(0,0,0,0.022) 39px,
+        rgba(0,0,0,0.022) 40px
+    );
+    pointer-events: none;
 }
 
-.page-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 15px;
+.rp-hero__circles { position: absolute; inset: 0; pointer-events: none; }
+
+.rp-hero__c {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+}
+
+.rp-hero__c--1 {
+    width: 380px; height: 380px;
+    right: -100px; bottom: -120px;
+}
+
+.rp-hero__c--2 {
+    width: 240px; height: 240px;
+    right: -30px; bottom: -50px;
+}
+
+.rp-hero__inner {
     position: relative;
+    z-index: 1;
+    animation: rpFade 0.8s ease both;
 }
 
-.page-subtitle {
-    font-size: 1.15rem;
-    color: rgba(255,255,255,0.9);
-    position: relative;
+@keyframes rpFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-/* References Section */
-.references-section {
-    padding: 100px 0;
-    background: linear-gradient(180deg, #f8f9ff 0%, #ffffff 100%);
+.rp-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
 }
 
-.references-grid {
+.rp-hero__eyebrow::before {
+    content: '';
+    display: block;
+    width: 28px; height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+}
+
+.rp-hero__title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 5.5vw, 4.8rem);
+    font-weight: 300;
+    line-height: 1.08;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+}
+
+.rp-hero__sub {
+    margin-top: 16px;
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    font-weight: 300;
+}
+
+.rp-hero__line {
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 55%);
+    opacity: 0.2;
+}
+
+/* ── Main ── */
+.rp-main {
+    padding: 70px 0 110px;
+}
+
+/* ── Grid ── */
+.rp-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
 }
 
-.reference-card {
-    background: #fff;
-    border-radius: 20px;
+/* ── Card ── */
+.rp-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: var(--shadow-soft);
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 2px solid rgba(45, 55, 72, 0.1);
+    transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+    animation: rpFade 0.6s ease both;
 }
 
-.reference-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-hover);
-    border-color: rgba(45, 55, 72, 0.3);
+.rp-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 48px rgba(42,61,82,0.12);
+    border-color: var(--border-2);
 }
 
-.reference-image {
-    height: 160px;
+/* Image area */
+.rp-card__img {
+    position: relative;
+    height: 150px;
+    background: var(--bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 30px;
-    background: linear-gradient(135deg, #fafbff 0%, #fff 100%);
-    position: relative;
+    padding: 24px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
 }
 
-.reference-image img {
+.rp-card__img img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    filter: grayscale(100%);
-    transition: all 0.5s;
+    filter: grayscale(100%) opacity(0.7);
+    transition: filter 0.35s ease, transform 0.35s ease;
 }
 
-.reference-card:hover .reference-image img {
-    filter: grayscale(0%);
-    transform: scale(1.05);
+.rp-card:hover .rp-card__img img {
+    filter: grayscale(0%) opacity(1);
+    transform: scale(1.04);
 }
 
-.reference-placeholder {
-    width: 70px;
-    height: 70px;
-    background: linear-gradient(135deg, rgba(45, 55, 72, 0.1), rgba(26, 32, 44, 0.1));
+/* Initials fallback */
+.rp-card__initials {
+    width: 64px; height: 64px;
+    border-radius: 10px;
+    background: var(--accent-m);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+}
+
+/* Hover overlay */
+.rp-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.28s ease;
+}
+
+.rp-card:hover .rp-card__overlay { opacity: 0.88; }
+
+.rp-card__overlay span {
+    width: 44px; height: 44px;
     border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-primary);
-    font-size: 1.8rem;
-}
-
-.reference-name-display {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 25px;
-    background: var(--gradient-primary);
-}
-
-.reference-name-display h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    font-weight: 700;
     color: #fff;
-    text-align: center;
-    line-height: 1.4;
-    margin: 0;
+    font-size: 0.9rem;
 }
 
-.modal-name-display {
-    width: 180px;
-    height: 130px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 25px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.3);
-    position: relative;
-    z-index: 1;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+/* Body */
+.rp-card__body {
+    padding: 18px 20px;
+    background: var(--white);
 }
 
-.modal-name-display h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #fff;
-    text-align: center;
-    line-height: 1.3;
-    margin: 0;
-}
-
-.reference-info {
-    padding: 25px;
-    text-align: center;
-    background: #fff;
-}
-
-.reference-name {
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--color-text);
+.rp-card__name {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--ink);
     margin-bottom: 8px;
     line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.reference-sector {
+.rp-card__tag {
     display: inline-block;
-    font-size: 0.85rem;
-    color: var(--color-text-light);
-    padding: 5px 15px;
-    background: linear-gradient(135deg, rgba(45, 55, 72, 0.08), rgba(26, 32, 44, 0.08));
-    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    background: var(--accent-l);
+    border: 1px solid var(--accent-m);
+    border-radius: 4px;
+    padding: 3px 10px;
 }
 
-/* Modal Styles */
+/* ── Modal ── */
 .ref-modal-page {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     z-index: 1000;
     align-items: center;
     justify-content: center;
 }
 
-.ref-modal-page.active {
-    display: flex;
-}
+.ref-modal-page.active { display: flex; }
 
 .ref-overlay-page {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.7);
+    inset: 0;
+    background: rgba(28,28,28,0.6);
+    backdrop-filter: blur(4px);
 }
 
 .ref-content-page {
     position: relative;
-    background: #fff;
-    padding: 40px;
-    border-radius: 12px;
-    max-width: 500px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 44px;
+    max-width: 520px;
     width: 90%;
     z-index: 1001;
+    box-shadow: 0 32px 80px rgba(28,28,28,0.18);
+    animation: rpFade 0.3s ease both;
 }
 
 .ref-close-page {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 35px;
-    height: 35px;
-    border: none;
-    background: #f0f0f0;
+    top: 18px; right: 18px;
+    width: 34px; height: 34px;
+    border: 1px solid var(--border);
+    background: var(--bg);
     border-radius: 50%;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-3);
+    font-size: 0.75rem;
+    transition: all 0.2s;
+}
+
+.ref-close-page:hover {
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 .ref-content-page h3 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: #1a1a1a;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
 }
 
 .ref-content-page p {
-    color: #333;
-    line-height: 1.6;
+    font-size: 0.92rem;
+    color: var(--ink-2);
+    line-height: 1.75;
+    font-weight: 300;
 }
 
-/* Empty State */
-.empty-state {
+/* ── Empty ── */
+.rp-empty {
     text-align: center;
-    padding: 100px 20px;
+    padding: 120px 20px;
+    color: var(--ink-3);
 }
 
-.empty-state i {
-    font-size: 5rem;
-    color: var(--color-primary);
+.rp-empty i {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    display: block;
     opacity: 0.3;
-    margin-bottom: 25px;
 }
 
-.empty-state p {
-    font-size: 1.1rem;
-    color: var(--color-text-light);
+.rp-empty p {
+    font-size: 1rem;
+    font-weight: 300;
 }
 
-/* Responsive */
+/* ── Responsive ── */
 @media (max-width: 1024px) {
-    .references-grid {
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 25px;
-    }
+    .rp-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
 }
 
 @media (max-width: 768px) {
-    .page-header {
-        padding: 100px 20px 60px;
-    }
-
-    .page-title {
-        font-size: 2.2rem;
-    }
-
-    .references-section {
-        padding: 60px 20px;
-    }
-
-    .references-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-
-    .reference-image {
-        height: 130px;
-        padding: 20px;
-    }
-
-    .reference-info {
-        padding: 20px;
-    }
-
-    .ref-content-page {
-        width: 90%;
-        padding: 30px;
-    }
-
-    .ref-content-page h3 {
-        font-size: 1.3rem;
-    }
+    .rp-hero  { padding: 100px 0 65px; }
+    .rp-grid  { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .rp-card__img { height: 120px; padding: 18px; }
+    .ref-content-page { padding: 32px 24px; }
 }
 
 @media (max-width: 480px) {
-    .references-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
-    .ref-content-page {
-        padding: 25px;
-    }
+    .rp-grid { grid-template-columns: 1fr; }
 }
 </style>
 @endsection
@@ -410,10 +471,9 @@ function closeReferenceModal(id) {
     }
 }
 
-// ESC tuşu ile kapatma
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-        document.querySelectorAll('.reference-modal.active').forEach(function(modal) {
+        document.querySelectorAll('.ref-modal-page.active').forEach(function(modal) {
             modal.classList.remove('active');
             document.body.style.overflow = '';
         });

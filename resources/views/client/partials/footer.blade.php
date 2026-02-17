@@ -1,78 +1,79 @@
 @php
-    $contact = getContact() ? getContact()->first() : null;
-    $menus = getMenus();
+    $contact      = getContact() ? getContact()->first() : null;
+    $menus        = getMenus();
     $homeSections = getTypeValues('sayfalar', 1);
-    $homeSection = count($homeSections) > 0 ? $homeSections[0] : null;
-    $settings = getWebsiteSettings();
+    $homeSection  = count($homeSections) > 0 ? $homeSections[0] : null;
+    $settings     = getWebsiteSettings();
 @endphp
 
 <footer id="footer">
-    <div class="footer-main">
+
+    <div class="ft-main">
         <div class="container">
-            <div class="row gy-5">
-                <div class="col-lg-4">
-                    <div class="footer-brand">
-                        <a href="/">
-                            <img src="/files/logo/cagla-ustundag-logo-text.png" alt="Çağla Üstündağ Logo" style="height: 50px;">
-                        </a>
-                        <p class="footer-tagline">{{ __('Profesyonel danışmanlık hizmetleri') }}</p>
-                    </div>
+            <div class="ft-grid">
+
+                <!-- Marka -->
+                <div class="ft-brand">
+                    <a href="/" class="ft-brand__logo">
+                        <img src="/files/logo/cagla-ustundag-logo-text.png" alt="Çağla Üstündağ Logo">
+                    </a>
+                    <p class="ft-brand__tag">{{ __('Profesyonel danışmanlık hizmetleri') }}</p>
                 </div>
 
-                <div class="col-lg-4">
-                    <div class="footer-contact">
-                        <h4>{{ __('İletişim') }}</h4>
-                        @if($contact)
-                        <ul class="contact-list">
-                            @if($contact->address)
-                            <li>
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>{!! $contact->address !!}</span>
-                            </li>
-                            @endif
-                            @if($contact->phone)
-                            <li>
-                                <i class="fas fa-phone"></i>
-                                <a href="tel:{{ $contact->phone }}">{!! $contact->phone !!}</a>
-                            </li>
-                            @endif
-                            @if($contact->email)
-                            <li>
-                                <i class="fas fa-envelope"></i>
-                                <a href="mailto:{{ $contact->email }}">{!! $contact->email !!}</a>
-                            </li>
-                            @endif
-                        </ul>
+                <!-- İletişim -->
+                <div class="ft-col">
+                    <p class="ft-col__label">{{ __('İletişim') }}</p>
+                    @if($contact)
+                    <ul class="ft-contact">
+                        @if($contact->address)
+                        <li>
+                            <span class="ft-contact__ico"><i class="fas fa-map-marker-alt"></i></span>
+                            <span>{!! $contact->address !!}</span>
+                        </li>
                         @endif
-                    </div>
+                        @if($contact->phone)
+                        <li>
+                            <span class="ft-contact__ico"><i class="fas fa-phone"></i></span>
+                            <a href="tel:{{ $contact->phone }}">{!! $contact->phone !!}</a>
+                        </li>
+                        @endif
+                        @if($contact->email)
+                        <li>
+                            <span class="ft-contact__ico"><i class="fas fa-envelope"></i></span>
+                            <a href="mailto:{{ $contact->email }}">{!! $contact->email !!}</a>
+                        </li>
+                        @endif
+                    </ul>
+                    @endif
                 </div>
 
-                <div class="col-lg-4">
-                    <div class="footer-links">
-                        <h4>{{ __('Hızlı Linkler') }}</h4>
-                        <ul class="quick-links">
-                            @foreach ($menus->take(5) as $menu)
-                                <li>
-                                    <a href="{{ $menu['url'] == '' ? route('showPage', [$menu['language']['key'], $menu['permalink']]) : $menu['url'] }}">
-                                        {!! $menu->name !!}
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
+                <!-- Hızlı Linkler -->
+                <div class="ft-col">
+                    <p class="ft-col__label">{{ __('Hızlı Linkler') }}</p>
+                    <ul class="ft-links">
+                        @foreach ($menus->take(5) as $menu)
+                        <li>
+                            <a href="{{ $menu['url'] == '' ? route('showPage', [$menu['language']['key'], $menu['permalink']]) : $menu['url'] }}">
+                                <i class="fas fa-chevron-right"></i>
+                                {!! $menu->name !!}
+                            </a>
+                        </li>
+                        @endforeach
+                    </ul>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <div class="footer-bottom">
+    <div class="ft-bottom">
         <div class="container">
-            <div class="footer-bottom-content">
-                <p class="copyright">{{ __('© 2026 Tüm Hakları Saklıdır.') }}</p>
-                <div class="footer-social">
+            <div class="ft-bottom__inner">
+                <p class="ft-bottom__copy">{{ __('© 2026 Tüm Hakları Saklıdır.') }}</p>
+                <div class="ft-social">
                     @foreach (['facebook' => 'facebook-f', 'twitter' => 'twitter', 'instagram' => 'instagram', 'linkedin' => 'linkedin-in'] as $key => $icon)
                         @if (!empty($settings->$key))
-                            <a href="{{ $settings->$key }}" target="_blank" class="social-link">
+                            <a href="{{ $settings->$key }}" target="_blank" class="ft-social__link">
                                 <i class="fab fa-{{ $icon }}"></i>
                             </a>
                         @endif
@@ -81,139 +82,173 @@
             </div>
         </div>
     </div>
+
 </footer>
 
 <style>
-    #footer {
-        background: #f8f9fa;
-        border-top: 1px solid #e5e5e5;
-    }
+#footer {
+    font-family: 'Outfit', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background: var(--white, #fff);
+    border-top: 1px solid #e4e2dc;
+}
 
-    .footer-main {
-        padding: 80px 0 60px;
-    }
+#footer .container { width: min(1140px, 92vw); margin-inline: auto; }
 
-    .footer-brand img {
-        margin-bottom: 20px;
-    }
+/* ─── main ─── */
+.ft-main { padding: 72px 0 56px; }
 
-    .footer-tagline {
-        color: #888;
-        font-size: 1rem;
-        margin: 0;
-    }
+.ft-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 60px;
+}
 
-    .footer-contact h4,
-    .footer-links h4 {
-        color: #1a1a1a;
-        font-size: 0.9rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 25px;
-    }
+/* Brand */
+.ft-brand__logo img {
+    height: 46px;
+    width: auto;
+    display: block;
+    margin-bottom: 18px;
+}
 
-    .contact-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+.ft-brand__tag {
+    font-size: .875rem;
+    color: #9a9891;
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 240px;
+}
 
-    .contact-list li {
-        display: flex;
-        align-items: flex-start;
-        gap: 15px;
-        margin-bottom: 15px;
-        color: #666;
-        font-size: 0.95rem;
-    }
+/* Columns */
+.ft-col__label {
+    font-size: .65rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #9a9891;
+    margin-bottom: 20px;
+}
 
-    .contact-list i {
-        color: #1a1a1a;
-        margin-top: 3px;
-        font-size: 0.9rem;
-    }
+/* Contact list */
+.ft-contact {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
 
-    .contact-list a {
-        color: #666;
-        text-decoration: none;
-        transition: color 0.3s;
-    }
+.ft-contact li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: .875rem;
+    color: #555550;
+    font-weight: 300;
+    line-height: 1.55;
+}
 
-    .contact-list a:hover {
-        color: #000;
-    }
+.ft-contact__ico {
+    width: 28px; height: 28px;
+    background: rgba(42,61,82,.07);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: #2a3d52;
+    font-size: .7rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
 
-    .quick-links {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+.ft-contact a {
+    color: inherit;
+    text-decoration: none;
+    transition: color .2s;
+}
 
-    .quick-links li {
-        margin-bottom: 10px;
-    }
+.ft-contact a:hover { color: #2a3d52; }
 
-    .quick-links a {
-        color: #666;
-        text-decoration: none;
-        font-size: 0.95rem;
-        transition: all 0.3s;
-        display: inline-block;
-    }
+/* Links */
+.ft-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
 
-    .quick-links a:hover {
-        color: #000;
-        padding-left: 5px;
-    }
+.ft-links a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    font-size: .875rem;
+    color: #555550;
+    font-weight: 300;
+    text-decoration: none;
+    border-bottom: 1px solid #e4e2dc;
+    transition: color .2s, padding-left .2s;
+}
 
-    .footer-bottom {
-        border-top: 1px solid #e5e5e5;
-        padding: 25px 0;
-        background: #fff;
-    }
+.ft-links li:last-child a { border-bottom: none; }
 
-    .footer-bottom-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+.ft-links a i {
+    font-size: .5rem;
+    color: #ccc9c0;
+    transition: color .2s;
+}
 
-    .copyright {
-        color: #999;
-        font-size: 0.85rem;
-        margin: 0;
-    }
+.ft-links a:hover { color: #2a3d52; padding-left: 4px; }
+.ft-links a:hover i { color: #2a3d52; }
 
-    .footer-social {
-        display: flex;
-        gap: 15px;
-    }
+/* ─── bottom ─── */
+.ft-bottom {
+    border-top: 1px solid #e4e2dc;
+    padding: 22px 0;
+    background: #fafaf8;
+}
 
-    .social-link {
-        width: 40px;
-        height: 40px;
-        border: 1px solid #ddd;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #666;
-        text-decoration: none;
-        transition: all 0.3s;
-    }
+.ft-bottom__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
 
-    .social-link:hover {
-        border-color: #000;
-        color: #000;
-        transform: translateY(-3px);
-    }
+.ft-bottom__copy {
+    font-size: .78rem;
+    color: #9a9891;
+    font-weight: 300;
+}
 
-    @media (max-width: 768px) {
-        .footer-bottom-content {
-            flex-direction: column;
-            gap: 20px;
-            text-align: center;
-        }
-    }
+.ft-social {
+    display: flex;
+    gap: 10px;
+}
+
+.ft-social__link {
+    width: 34px; height: 34px;
+    border: 1px solid #e4e2dc;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #9a9891;
+    font-size: .75rem;
+    text-decoration: none;
+    transition: all .22s;
+}
+
+.ft-social__link:hover {
+    border-color: #2a3d52;
+    color: #2a3d52;
+    transform: translateY(-2px);
+}
+
+/* ─── responsive ─── */
+@media (max-width: 900px) {
+    .ft-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .ft-brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 600px) {
+    .ft-grid { grid-template-columns: 1fr; gap: 36px; }
+    .ft-bottom__inner { flex-direction: column; text-align: center; }
+}
 </style>
