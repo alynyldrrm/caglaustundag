@@ -53,14 +53,39 @@
                     <div class="sh-detail__main">
 
                         @php
-                            $intro = strip_tags($icerik);
-                            $intro = explode("\n", $intro)[0] ?? '';
+                            // Tüm paragrafları al (ilk satır hariç liste için ayrılacak)
+                            $contentText = strip_tags($icerik);
+                            $paragraphs = array_filter(array_map('trim', explode("\n", $contentText)));
+                            $paragraphs = array_values($paragraphs);
+                            
+                            // İlk paragrafı intro olarak al
+                            $intro = $paragraphs[0] ?? '';
+                            
+                            // Diğer paragrafları (başlıklar dahil) al
+                            $otherParas = array_slice($paragraphs, 1);
                         @endphp
+                        
                         @if($intro)
                             <p class="sh-intro">{!! $intro !!}</p>
                         @endif
+                        
+                        @foreach($otherParas as $para)
+                            @if(trim($para))
+                                @php
+                                    $isBold = strpos($para, 'çalıştığınızda:') !== false || 
+                                              strpos($para, 'Nedir?') !== false ||
+                                              mb_substr($para, -1) === ':';
+                                @endphp
+                                @if($isBold)
+                                    <h3 class="sh-subtitle">{!! $para !!}</h3>
+                                @else
+                                    <p class="sh-paragraph">{!! $para !!}</p>
+                                @endif
+                            @endif
+                        @endforeach
 
                         @php
+                            // Liste öğelerini işle
                             preg_match_all('/<li[^>]*>(.*?)<\/li>/s', $icerik, $matches);
                             $items = $matches[1] ?? [];
                             $groups = [];
@@ -390,9 +415,27 @@
     color: var(--ink-2);
     line-height: 1.8;
     font-weight: 300;
-    margin-bottom: 40px;
+    margin-bottom: 24px;
     padding-bottom: 32px;
     border-bottom: 1px solid var(--border);
+}
+
+/* Diğer Paragraflar */
+.sh-paragraph {
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    line-height: 1.75;
+    font-weight: 300;
+    margin-bottom: 20px;
+}
+
+/* Alt Başlıklar */
+.sh-subtitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 28px 0 16px;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* Feature groups */
