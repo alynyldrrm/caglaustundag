@@ -13,6 +13,12 @@
 
     $hizmetler   = getTypeValues('hizmetler', 100);  // tümünü çek, sonra slice et
     $referanslar = getTypeValues('referanslar', 5);
+    
+    // Anasayfa Sectionları - Tip permalink: 'anasayfa-section' veya 'anasayfa-sectionlar'
+    $customSections = getTypeValues('anasayfa-section', 10);
+    if (empty($customSections)) {
+        $customSections = getTypeValues('anasayfa-sectionlar', 10);
+    }
 
     // Hizmetler liste sayfası URL'si
     // getMenus() tüm nav menülerini döner (parent + children birlikte)
@@ -147,6 +153,55 @@
                         <h3>{!! $referans['name'] !!}</h3>
                         @php $detay = getValue('Detay', $referans) ?: getValue('detay', $referans); @endphp
                         @if($detay)<p>{!! $detay !!}</p>@endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
+    {{-- Anasayfa Sectionları --}}
+    @if(count($customSections) > 0)
+    <section class="ha-custom-sections">
+        <div class="container">
+            <div class="ha-section-head">
+                <div>
+                    <span class="ha-eyebrow">{{ __('Neden Biz') }}</span>
+                    <h2 class="ha-title">{{ __('Fark Yaratıyoruz') }}</h2>
+                </div>
+            </div>
+            <div class="ha-cs-list">
+                @foreach($customSections as $index => $section)
+                @php
+                    $sResim = isset($section['fields']['resim'][0]) 
+                        ? getImageLink($section['fields']['resim'][0]['path'], ['w' => 700, 'h' => 500, 'fit' => 'cover'])
+                        : null;
+                    $sBaslik = $section['name'] ?? '';
+                    $sAciklama = getValue('aciklama', $section) ?: getValue('Aciklama', $section) ?: '';
+                    $sButonVar = getValue('buton_var_mi', $section) ?: getValue('Buton Var Mi', $section) ?: '';
+                    $sButonMetni = getValue('buton_metni', $section) ?: getValue('Buton Metni', $section) ?: __('Detaylı Bilgi');
+                    $sButonLinki = getValue('buton_linki', $section) ?: getValue('Buton Linki', $section) ?: '#';
+                    // Tek sayılı kartlarda resim solda, çift sayılılarda sağda
+                    $imgPosition = ($index % 2 == 0) ? 'left' : 'right';
+                @endphp
+                <div class="ha-cs-item ha-cs-item--{{ $imgPosition }}" data-aos="fade-up">
+                    @if($sResim)
+                    <div class="ha-cs-item__img">
+                        <img src="{{ $sResim }}" alt="{!! $sBaslik !!}" loading="lazy">
+                        <div class="ha-cs-item__deco"></div>
+                    </div>
+                    @endif
+                    <div class="ha-cs-item__content">
+                        <span class="ha-cs-item__num">{{ sprintf('%02d', $index + 1) }}</span>
+                        <h3 class="ha-cs-item__title">{!! $sBaslik !!}</h3>
+                        <p class="ha-cs-item__desc">{!! $sAciklama !!}</p>
+                        @if($sButonVar == 'Evet' || $sButonVar == '1')
+                        <a href="{{ $sButonLinki }}" class="ha-cs-item__link">
+                            {{ $sButonMetni }}
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        @endif
                     </div>
                 </div>
                 @endforeach
@@ -585,6 +640,150 @@
 .ref-content p {
     font-size: .92rem; color: var(--ink-2);
     line-height: 1.75; font-weight: 300;
+}
+
+/* ═══════════════════════════════════
+   ANASAYFA SECTIONLARI
+═══════════════════════════════════ */
+.ha-custom-sections {
+    padding: 100px 0;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+}
+
+.ha-cs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+}
+
+.ha-cs-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+/* Resim solda (tek sayılar: 1, 3, 5...) */
+.ha-cs-item--left {
+    direction: ltr;
+}
+
+/* Resim sağda (çift sayılar: 2, 4, 6...) */
+.ha-cs-item--right {
+    direction: rtl;
+}
+
+.ha-cs-item--right > * {
+    direction: ltr;
+}
+
+.ha-cs-item__img {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+}
+
+.ha-cs-item__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .6s ease;
+}
+
+.ha-cs-item:hover .ha-cs-item__img img {
+    transform: scale(1.05);
+}
+
+.ha-cs-item__deco {
+    position: absolute;
+    inset: auto -20px -20px auto;
+    width: 100px;
+    height: 100px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: .06;
+    pointer-events: none;
+}
+
+.ha-cs-item__content {
+    padding: 20px 0;
+}
+
+.ha-cs-item__num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 400;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 16px rgba(42,61,82,.2);
+}
+
+.ha-cs-item__title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.ha-cs-item__desc {
+    font-size: 1rem;
+    color: var(--ink-2);
+    line-height: 1.8;
+    font-weight: 300;
+    margin-bottom: 28px;
+}
+
+.ha-cs-item__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: var(--accent);
+    color: #fff;
+    font-size: .85rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all .25s ease;
+}
+
+.ha-cs-item__link:hover {
+    background: #1e2e3f;
+    box-shadow: 0 8px 28px rgba(42,61,82,.25);
+    transform: translateY(-2px);
+    text-decoration: none;
+    color: #fff;
+}
+
+.ha-cs-item__link i {
+    font-size: .75rem;
+    transition: transform .2s;
+}
+
+.ha-cs-item__link:hover i {
+    transform: translateX(4px);
+}
+
+@media (max-width: 900px) {
+    .ha-cs-item {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    .ha-cs-item__img {
+        aspect-ratio: 16/9;
+    }
+    .ha-cs-list { gap: 60px; }
 }
 
 /* ═══════════════════════════════════
