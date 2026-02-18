@@ -16,19 +16,13 @@
 
     <!-- Hero -->
     <section class="rp-hero">
-        <div class="rp-hero__noise"></div>
-        <div class="rp-hero__circles">
-            <span class="rp-hero__c rp-hero__c--1"></span>
-            <span class="rp-hero__c rp-hero__c--2"></span>
-        </div>
         <div class="container">
             <div class="rp-hero__inner">
-
+                <span class="rp-hero__eyebrow">{{ __('Referanslar') }}</span>
                 <h1 class="rp-hero__title">{!! $menu->name ?? __('Referanslar') !!}</h1>
                 <p class="rp-hero__sub">{{ __('Başarı projelerimiz ve iş ortaklarımız') }}</p>
             </div>
         </div>
-        <div class="rp-hero__line"></div>
     </section>
 
     <!-- Grid -->
@@ -96,237 +90,181 @@
 @section('css')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-    --bg:       #f8f7f4;
+    --bg:       #f5f4f0;
     --white:    #ffffff;
-    --ink:      #1c1c1c;
-    --ink-2:    #555550;
+    --ink:      #181818;
+    --ink-2:    #4a4a45;
     --ink-3:    #9a9891;
-    --border:   #e4e2dc;
-    --border-2: #ccc9c0;
-    --accent:   #2a3d52;
-    --accent-l: rgba(42,61,82,0.06);
-    --accent-m: rgba(42,61,82,0.12);
+    --border:   #e2e0d8;
+    --border-2: #c8c5ba;
+    --accent:   #1e3a4f;
+    --accent-l: rgba(30,58,79,0.06);
+    --accent-m: rgba(30,58,79,0.13);
+    --gold:     #b5904a;
 }
 
 .rp {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Nunito', sans-serif;
     background: var(--bg);
     color: var(--ink);
     -webkit-font-smoothing: antialiased;
 }
 
-.container {
-    width: min(1200px, 92vw);
-    margin-inline: auto;
-}
+.container { width: min(1200px, 92vw); margin-inline: auto; }
 
-/* ── Hero ── */
+/* ══════════════════════════
+   HERO — kompakt
+══════════════════════════ */
 .rp-hero {
-    position: relative;
     background: var(--white);
-    padding: 130px 0 80px;
+    padding: 48px 0 40px;
     border-bottom: 1px solid var(--border);
-    overflow: hidden;
-}
-
-.rp-hero__noise {
-    position: absolute;
-    inset: 0;
-    background-image: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 39px,
-        rgba(0,0,0,0.022) 39px,
-        rgba(0,0,0,0.022) 40px
-    );
-    pointer-events: none;
-}
-
-.rp-hero__circles { position: absolute; inset: 0; pointer-events: none; }
-
-.rp-hero__c {
-    position: absolute;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-}
-
-.rp-hero__c--1 {
-    width: 380px; height: 380px;
-    right: -100px; bottom: -120px;
-}
-
-.rp-hero__c--2 {
-    width: 240px; height: 240px;
-    right: -30px; bottom: -50px;
 }
 
 .rp-hero__inner {
-    position: relative;
-    z-index: 1;
-    animation: rpFade 0.8s ease both;
-}
-
-@keyframes rpFade {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .rp-hero__eyebrow {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
+    gap: 8px;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .18em;
     text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 20px;
+    color: var(--gold);
 }
 
 .rp-hero__eyebrow::before {
     content: '';
     display: block;
-    width: 28px; height: 1px;
-    background: var(--accent);
-    opacity: 0.5;
+    width: 20px; height: 1px;
+    background: var(--gold);
 }
 
 .rp-hero__title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.8rem, 5.5vw, 4.8rem);
-    font-weight: 300;
-    line-height: 1.08;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    font-weight: 500;
+    line-height: 1.12;
     color: var(--ink);
-    letter-spacing: -0.015em;
+    letter-spacing: -.015em;
 }
 
 .rp-hero__sub {
-    margin-top: 16px;
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: var(--ink-2);
-    font-weight: 300;
+    font-weight: 400;
+    margin-top: 4px;
 }
 
-.rp-hero__line {
-    position: absolute;
-    left: 0; bottom: 0;
-    width: 100%; height: 3px;
-    background: linear-gradient(90deg, var(--accent) 0%, transparent 55%);
-    opacity: 0.2;
-}
+/* ══════════════════════════
+   MAIN
+══════════════════════════ */
+.rp-main { padding: 52px 0 80px; }
 
-/* ── Main ── */
-.rp-main {
-    padding: 70px 0 110px;
-}
-
-/* ── Grid ── */
+/* ══════════════════════════
+   GRID
+══════════════════════════ */
 .rp-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 24px;
+    gap: 20px;
 }
 
-/* ── Card ── */
+/* ══════════════════════════
+   CARD
+══════════════════════════ */
 .rp-card {
     background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
-    animation: rpFade 0.6s ease both;
+    transition: transform .26s ease, box-shadow .26s ease, border-color .26s ease;
 }
 
 .rp-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 18px 48px rgba(42,61,82,0.12);
+    transform: translateY(-5px);
+    box-shadow: 0 16px 44px rgba(30,58,79,.12);
     border-color: var(--border-2);
 }
 
-/* Image area */
+/* Image */
 .rp-card__img {
     position: relative;
-    height: 150px;
+    height: 148px;
     background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 22px;
     overflow: hidden;
     border-bottom: 1px solid var(--border);
 }
 
 .rp-card__img img {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 100%; max-height: 100%;
     object-fit: contain;
-    filter: grayscale(100%) opacity(0.7);
-    transition: filter 0.35s ease, transform 0.35s ease;
+    filter: opacity(.85);
+    transition: filter .3s ease, transform .3s ease;
 }
 
 .rp-card:hover .rp-card__img img {
-    filter: grayscale(0%) opacity(1);
-    transform: scale(1.04);
+    filter: opacity(1);
+    transform: scale(1.05);
 }
 
 /* Initials fallback */
 .rp-card__initials {
-    width: 64px; height: 64px;
+    width: 60px; height: 60px;
     border-radius: 10px;
     background: var(--accent-m);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
     font-weight: 500;
     color: var(--accent);
-    letter-spacing: 0.04em;
+    letter-spacing: .04em;
 }
 
 /* Hover overlay */
 .rp-card__overlay {
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: var(--accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     opacity: 0;
-    transition: opacity 0.28s ease;
+    transition: opacity .26s ease;
 }
 
-.rp-card:hover .rp-card__overlay { opacity: 0.88; }
+.rp-card:hover .rp-card__overlay { opacity: .85; }
 
 .rp-card__overlay span {
-    width: 44px; height: 44px;
+    width: 42px; height: 42px;
     border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border: 1px solid rgba(255,255,255,.4);
+    display: flex; align-items: center; justify-content: center;
     color: #fff;
-    font-size: 0.9rem;
+    font-size: .88rem;
 }
 
 /* Body */
 .rp-card__body {
-    padding: 18px 20px;
-    background: var(--white);
+    padding: 16px 18px;
 }
 
 .rp-card__name {
-    font-size: 0.92rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 600;
     color: var(--ink);
-    margin-bottom: 8px;
+    margin-bottom: 7px;
     line-height: 1.4;
     white-space: nowrap;
     overflow: hidden;
@@ -335,9 +273,9 @@
 
 .rp-card__tag {
     display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .06em;
     color: var(--accent);
     background: var(--accent-l);
     border: 1px solid var(--accent-m);
@@ -345,107 +283,94 @@
     padding: 3px 10px;
 }
 
-/* ── Modal ── */
+/* ══════════════════════════
+   MODAL
+══════════════════════════ */
 .ref-modal-page {
     display: none;
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     z-index: 1000;
-    align-items: center;
-    justify-content: center;
+    align-items: center; justify-content: center;
 }
 
 .ref-modal-page.active { display: flex; }
 
 .ref-overlay-page {
-    position: absolute;
-    inset: 0;
-    background: rgba(28,28,28,0.6);
-    backdrop-filter: blur(4px);
+    position: absolute; inset: 0;
+    background: rgba(24,24,24,.55);
+    backdrop-filter: blur(5px);
 }
 
 .ref-content-page {
     position: relative;
     background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 44px;
-    max-width: 520px;
-    width: 90%;
+    border-radius: 12px;
+    padding: 38px;
+    max-width: 500px; width: 90%;
     z-index: 1001;
-    box-shadow: 0 32px 80px rgba(28,28,28,0.18);
-    animation: rpFade 0.3s ease both;
+    box-shadow: 0 28px 70px rgba(24,24,24,.15);
 }
 
 .ref-close-page {
-    position: absolute;
-    top: 18px; right: 18px;
-    width: 34px; height: 34px;
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px;
     border: 1px solid var(--border);
     background: var(--bg);
     border-radius: 50%;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--ink-3);
-    font-size: 0.75rem;
-    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-3); font-size: .7rem;
+    transition: all .2s;
 }
 
-.ref-close-page:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-}
+.ref-close-page:hover { border-color: var(--accent); color: var(--accent); }
 
 .ref-content-page h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem;
-    font-weight: 400;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.85rem;
+    font-weight: 500;
     color: var(--ink);
-    margin-bottom: 18px;
-    padding-bottom: 18px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
     border-bottom: 1px solid var(--border);
-    letter-spacing: -0.01em;
     line-height: 1.2;
 }
 
 .ref-content-page p {
-    font-size: 0.92rem;
+    font-size: 1rem;
     color: var(--ink-2);
-    line-height: 1.75;
-    font-weight: 300;
+    line-height: 1.8;
+    font-weight: 400;
 }
 
-/* ── Empty ── */
+/* ══════════════════════════
+   EMPTY
+══════════════════════════ */
 .rp-empty {
     text-align: center;
-    padding: 120px 20px;
+    padding: 80px 20px;
     color: var(--ink-3);
 }
 
 .rp-empty i {
-    font-size: 3.5rem;
-    margin-bottom: 20px;
+    font-size: 3rem;
+    margin-bottom: 16px;
     display: block;
-    opacity: 0.3;
+    opacity: .3;
 }
 
-.rp-empty p {
-    font-size: 1rem;
-    font-weight: 300;
-}
+.rp-empty p { font-size: 1rem; font-weight: 400; }
 
-/* ── Responsive ── */
-@media (max-width: 1024px) {
-    .rp-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-}
-
+/* ══════════════════════════
+   RESPONSIVE
+══════════════════════════ */
 @media (max-width: 768px) {
-    .rp-hero  { padding: 100px 0 65px; }
-    .rp-grid  { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .rp-card__img { height: 120px; padding: 18px; }
-    .ref-content-page { padding: 32px 24px; }
+    .rp-hero { padding: 36px 0 30px; }
+    .rp-main { padding: 36px 0 60px; }
+    .rp-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .rp-card__img { height: 120px; padding: 16px; }
+    .ref-content-page { padding: 28px 20px; }
 }
 
 @media (max-width: 480px) {

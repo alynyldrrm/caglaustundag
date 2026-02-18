@@ -111,6 +111,51 @@
     </section>
     <?php endif; ?>
 
+    
+    <?php if(count($referanslar) > 0): ?>
+    <section class="ha-refs">
+        <div class="container">
+            <div class="ha-section-head">
+                <div>
+                    <span class="ha-eyebrow"><?php echo e(__('Referanslar')); ?></span>
+                    <h2 class="ha-title"><?php echo e(__('İş Ortaklarımız')); ?></h2>
+                </div>
+                <?php if($referanslarMenuUrl): ?>
+                <a href="<?php echo e($referanslarMenuUrl); ?>" class="ha-btn ha-btn--outline ha-btn--sm">
+                    <?php echo e(__('Tüm Referansları Gör')); ?>
+
+                    <span class="ha-btn__arr"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                <?php endif; ?>
+            </div>
+            <div class="ha-refs__grid">
+                <?php $__currentLoopData = $referanslar; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $referans): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <div class="ha-ref" onclick="openRefModal(<?php echo e($referans['id']); ?>)">
+                    <?php if(isset($referans['fields']['resim'][0])): ?>
+                        <img src="<?php echo e(getImageLink($referans['fields']['resim'][0]['path'], ['w' => 200, 'h' => 120, 'q' => 90, 'fit' => 'contain'])); ?>"
+                             alt="<?php echo $referans['name']; ?>">
+                    <?php else: ?>
+                        <div class="ha-ref__name"><?php echo $referans['name']; ?></div>
+                    <?php endif; ?>
+                    <div class="ha-ref__overlay"><i class="fas fa-eye"></i></div>
+                </div>
+
+                <div id="ref-modal-<?php echo e($referans['id']); ?>" class="ref-modal">
+                    <div class="ref-overlay" onclick="closeRefModal(<?php echo e($referans['id']); ?>)"></div>
+                    <div class="ref-content">
+                        <button class="ref-close" onclick="closeRefModal(<?php echo e($referans['id']); ?>)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <h3><?php echo $referans['name']; ?></h3>
+                        <?php $detay = getValue('Detay', $referans) ?: getValue('detay', $referans); ?>
+                        <?php if($detay): ?><p><?php echo $detay; ?></p><?php endif; ?>
+                    </div>
+                </div>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
 
     
     <?php if(count($customSections) > 0): ?>
@@ -158,55 +203,6 @@
         </div>
     </section>
     <?php endif; ?>
-
-
-    
-    <?php if(count($referanslar) > 0): ?>
-    <section class="ha-refs">
-        <div class="container">
-            <div class="ha-section-head">
-                <div>
-                    <span class="ha-eyebrow"><?php echo e(__('Referanslar')); ?></span>
-                    <h2 class="ha-title"><?php echo e(__('İş Ortaklarımız')); ?></h2>
-                </div>
-                <?php if($referanslarMenuUrl): ?>
-                <a href="<?php echo e($referanslarMenuUrl); ?>" class="ha-btn ha-btn--outline ha-btn--sm">
-                    <?php echo e(__('Tüm Referansları Gör')); ?>
-
-                    <span class="ha-btn__arr"><i class="fas fa-arrow-right"></i></span>
-                </a>
-                <?php endif; ?>
-            </div>
-            <div class="ha-refs__grid">
-                <?php $__currentLoopData = $referanslar; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $referans): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <div class="ha-ref" onclick="openRefModal(<?php echo e($referans['id']); ?>)">
-                    <?php if(isset($referans['fields']['resim'][0])): ?>
-                        <img src="<?php echo e(getImageLink($referans['fields']['resim'][0]['path'], ['w' => 200, 'h' => 120, 'q' => 90, 'fit' => 'contain'])); ?>"
-                             alt="<?php echo $referans['name']; ?>">
-                    <?php else: ?>
-                        <div class="ha-ref__name"><?php echo $referans['name']; ?></div>
-                    <?php endif; ?>
-                    <div class="ha-ref__overlay"><i class="fas fa-eye"></i></div>
-                </div>
-
-                <div id="ref-modal-<?php echo e($referans['id']); ?>" class="ref-modal">
-                    <div class="ref-overlay" onclick="closeRefModal(<?php echo e($referans['id']); ?>)"></div>
-                    <div class="ref-content">
-                        <button class="ref-close" onclick="closeRefModal(<?php echo e($referans['id']); ?>)">
-                            <i class="fas fa-times"></i>
-                        </button>
-                        <h3><?php echo $referans['name']; ?></h3>
-                        <?php $detay = getValue('Detay', $referans) ?: getValue('detay', $referans); ?>
-                        <?php if($detay): ?><p><?php echo $detay; ?></p><?php endif; ?>
-                    </div>
-                </div>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </div>
-        </div>
-    </section>
-    <?php endif; ?>
-
-
 
     
     <section class="ha-stats">
@@ -577,11 +573,11 @@
 .ha-ref img {
     max-width: 100%; max-height: 100%;
     object-fit: contain;
-    filter: grayscale(1) opacity(.55);
+    filter: opacity(.75);
     transition: filter .28s;
 }
 
-.ha-ref:hover img { filter: grayscale(0) opacity(1); }
+.ha-ref:hover img { filter: opacity(1); }
 
 .ha-ref__name {
     font-size: .82rem;

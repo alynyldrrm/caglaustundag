@@ -110,6 +110,50 @@
     </section>
     @endif
 
+    {{-- Referanslar --}}
+    @if(count($referanslar) > 0)
+    <section class="ha-refs">
+        <div class="container">
+            <div class="ha-section-head">
+                <div>
+                    <span class="ha-eyebrow">{{ __('Referanslar') }}</span>
+                    <h2 class="ha-title">{{ __('İş Ortaklarımız') }}</h2>
+                </div>
+                @if($referanslarMenuUrl)
+                <a href="{{ $referanslarMenuUrl }}" class="ha-btn ha-btn--outline ha-btn--sm">
+                    {{ __('Tüm Referansları Gör') }}
+                    <span class="ha-btn__arr"><i class="fas fa-arrow-right"></i></span>
+                </a>
+                @endif
+            </div>
+            <div class="ha-refs__grid">
+                @foreach($referanslar as $referans)
+                <div class="ha-ref" onclick="openRefModal({{ $referans['id'] }})">
+                    @if(isset($referans['fields']['resim'][0]))
+                        <img src="{{ getImageLink($referans['fields']['resim'][0]['path'], ['w' => 200, 'h' => 120, 'q' => 90, 'fit' => 'contain']) }}"
+                             alt="{!! $referans['name'] !!}">
+                    @else
+                        <div class="ha-ref__name">{!! $referans['name'] !!}</div>
+                    @endif
+                    <div class="ha-ref__overlay"><i class="fas fa-eye"></i></div>
+                </div>
+
+                <div id="ref-modal-{{ $referans['id'] }}" class="ref-modal">
+                    <div class="ref-overlay" onclick="closeRefModal({{ $referans['id'] }})"></div>
+                    <div class="ref-content">
+                        <button class="ref-close" onclick="closeRefModal({{ $referans['id'] }})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <h3>{!! $referans['name'] !!}</h3>
+                        @php $detay = getValue('Detay', $referans) ?: getValue('detay', $referans); @endphp
+                        @if($detay)<p>{!! $detay !!}</p>@endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
 
     {{-- Anasayfa Sectionları --}}
     @if(count($customSections) > 0)
@@ -156,54 +200,6 @@
         </div>
     </section>
     @endif
-
-
-    {{-- Referanslar --}}
-    @if(count($referanslar) > 0)
-    <section class="ha-refs">
-        <div class="container">
-            <div class="ha-section-head">
-                <div>
-                    <span class="ha-eyebrow">{{ __('Referanslar') }}</span>
-                    <h2 class="ha-title">{{ __('İş Ortaklarımız') }}</h2>
-                </div>
-                @if($referanslarMenuUrl)
-                <a href="{{ $referanslarMenuUrl }}" class="ha-btn ha-btn--outline ha-btn--sm">
-                    {{ __('Tüm Referansları Gör') }}
-                    <span class="ha-btn__arr"><i class="fas fa-arrow-right"></i></span>
-                </a>
-                @endif
-            </div>
-            <div class="ha-refs__grid">
-                @foreach($referanslar as $referans)
-                <div class="ha-ref" onclick="openRefModal({{ $referans['id'] }})">
-                    @if(isset($referans['fields']['resim'][0]))
-                        <img src="{{ getImageLink($referans['fields']['resim'][0]['path'], ['w' => 200, 'h' => 120, 'q' => 90, 'fit' => 'contain']) }}"
-                             alt="{!! $referans['name'] !!}">
-                    @else
-                        <div class="ha-ref__name">{!! $referans['name'] !!}</div>
-                    @endif
-                    <div class="ha-ref__overlay"><i class="fas fa-eye"></i></div>
-                </div>
-
-                <div id="ref-modal-{{ $referans['id'] }}" class="ref-modal">
-                    <div class="ref-overlay" onclick="closeRefModal({{ $referans['id'] }})"></div>
-                    <div class="ref-content">
-                        <button class="ref-close" onclick="closeRefModal({{ $referans['id'] }})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                        <h3>{!! $referans['name'] !!}</h3>
-                        @php $detay = getValue('Detay', $referans) ?: getValue('detay', $referans); @endphp
-                        @if($detay)<p>{!! $detay !!}</p>@endif
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-    @endif
-
-
 
     {{-- İstatistikler --}}
     <section class="ha-stats">
@@ -574,11 +570,11 @@
 .ha-ref img {
     max-width: 100%; max-height: 100%;
     object-fit: contain;
-    filter: grayscale(1) opacity(.55);
+    filter: opacity(.75);
     transition: filter .28s;
 }
 
-.ha-ref:hover img { filter: grayscale(0) opacity(1); }
+.ha-ref:hover img { filter: opacity(1); }
 
 .ha-ref__name {
     font-size: .82rem;
