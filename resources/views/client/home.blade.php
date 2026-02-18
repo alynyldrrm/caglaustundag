@@ -110,6 +110,52 @@
     </section>
     @endif
 
+     {{-- Anasayfa Sectionları --}}
+    @if(count($customSections) > 0)
+    <section class="ha-custom-sections">
+        <div class="container">
+            <div class="ha-section-head">
+                <div>
+                    <span class="ha-eyebrow">{{ __('Neden Biz') }}</span>
+                    <h2 class="ha-title">{{ __('Fark Yaratıyoruz') }}</h2>
+                </div>
+            </div>
+            <div class="ha-cs-list">
+                @foreach($customSections as $index => $section)
+                @php
+                    $sResim = isset($section['fields']['resim'][0])
+                        ? getImageLink($section['fields']['resim'][0]['path'], ['w' => 700, 'h' => 500, 'fit' => 'cover'])
+                        : null;
+                    $sBaslik = $section['name'] ?? '';
+                    $sAciklama = getValue('aciklama', $section) ?: getValue('Aciklama', $section) ?: '';
+                    $sButonVar = getValue('buton_var_mi', $section) ?: getValue('Buton Var Mi', $section) ?: '';
+                    $sButonMetni = getValue('buton_metni', $section) ?: getValue('Buton Metni', $section) ?: __('Detaylı Bilgi');
+                    $sButonLinki = getValue('buton_linki', $section) ?: getValue('Buton Linki', $section) ?: '#';
+                    $imgPosition = ($index % 2 == 0) ? 'left' : 'right';
+                @endphp
+                <div class="ha-cs-item ha-cs-item--{{ $imgPosition }}" data-aos="fade-up">
+                    @if($sResim)
+                    <div class="ha-cs-item__img">
+                        <img src="{{ $sResim }}" alt="{!! $sBaslik !!}" loading="lazy">
+                    </div>
+                    @endif
+                    <div class="ha-cs-item__content">
+                        <h3 class="ha-cs-item__title">{!! $sBaslik !!}</h3>
+                        <p class="ha-cs-item__desc">{!! $sAciklama !!}</p>
+                        @if($sButonVar == 'Evet' || $sButonVar == '1')
+                        <a href="{{ $sButonLinki }}" class="ha-cs-item__link">
+                            {{ $sButonMetni }}
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
     {{-- Referanslar --}}
     @if(count($referanslar) > 0)
     <section class="ha-refs">
@@ -155,51 +201,7 @@
     </section>
     @endif
 
-    {{-- Anasayfa Sectionları --}}
-    @if(count($customSections) > 0)
-    <section class="ha-custom-sections">
-        <div class="container">
-            <div class="ha-section-head">
-                <div>
-                    <span class="ha-eyebrow">{{ __('Neden Biz') }}</span>
-                    <h2 class="ha-title">{{ __('Fark Yaratıyoruz') }}</h2>
-                </div>
-            </div>
-            <div class="ha-cs-list">
-                @foreach($customSections as $index => $section)
-                @php
-                    $sResim = isset($section['fields']['resim'][0])
-                        ? getImageLink($section['fields']['resim'][0]['path'], ['w' => 700, 'h' => 500, 'fit' => 'cover'])
-                        : null;
-                    $sBaslik = $section['name'] ?? '';
-                    $sAciklama = getValue('aciklama', $section) ?: getValue('Aciklama', $section) ?: '';
-                    $sButonVar = getValue('buton_var_mi', $section) ?: getValue('Buton Var Mi', $section) ?: '';
-                    $sButonMetni = getValue('buton_metni', $section) ?: getValue('Buton Metni', $section) ?: __('Detaylı Bilgi');
-                    $sButonLinki = getValue('buton_linki', $section) ?: getValue('Buton Linki', $section) ?: '#';
-                    $imgPosition = ($index % 2 == 0) ? 'left' : 'right';
-                @endphp
-                <div class="ha-cs-item ha-cs-item--{{ $imgPosition }}" data-aos="fade-up">
-                    @if($sResim)
-                    <div class="ha-cs-item__img">
-                        <img src="{{ $sResim }}" alt="{!! $sBaslik !!}" loading="lazy">
-                    </div>
-                    @endif
-                    <div class="ha-cs-item__content">
-                        <h3 class="ha-cs-item__title">{!! $sBaslik !!}</h3>
-                        <p class="ha-cs-item__desc">{!! $sAciklama !!}</p>
-                        @if($sButonVar == 'Evet' || $sButonVar == '1')
-                        <a href="{{ $sButonLinki }}" class="ha-cs-item__link">
-                            {{ $sButonMetni }}
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        @endif
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-    @endif
+
 
     {{-- İstatistikler --}}
     <section class="ha-stats">
