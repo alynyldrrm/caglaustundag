@@ -14,7 +14,7 @@
 <?php $__env->startSection('content'); ?>
 <section class="page-header">
     <div class="container">
-        <h1 class="page-title"><?php echo e($menu->name ?? __('Sıkça Sorulan Sorular')); ?></h1>
+        <h1 class="page-title"><?php echo $menu->name ?? __('Sıkça Sorulan Sorular'); ?></h1>
         <p class="page-subtitle"><?php echo e(__('Merak ettiğiniz soruların cevapları')); ?></p>
     </div>
 </section>
@@ -27,7 +27,7 @@
                     <div class="faq-item">
                         <button class="faq-question" onclick="toggleFaq(this)">
                             <span class="faq-number"><?php echo e(sprintf('%02d', $index + 1)); ?></span>
-                            <span class="faq-text"><?php echo e(getValue('soru', $sss) ?: $sss['name']); ?></span>
+                            <span class="faq-text"><?php echo getValue('soru', $sss) ?: $sss['name']; ?></span>
                             <i class="fas fa-chevron-down faq-icon"></i>
                         </button>
                         <div class="faq-answer">

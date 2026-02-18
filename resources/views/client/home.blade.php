@@ -11,24 +11,19 @@
             : '/assets/client/img/style-switcher.png';
     }
 
-    $hizmetler   = getTypeValues('hizmetler', 100);  // tümünü çek, sonra slice et
+    $hizmetler   = getTypeValues('hizmetler', 100);
     $referanslar = getTypeValues('referanslar', 5);
-    
-    // Anasayfa Sectionları - Tip permalink: 'anasayfa-section' veya 'anasayfa-sectionlar'
+
     $customSections = getTypeValues('anasayfa-section', 10);
     if (empty($customSections)) {
         $customSections = getTypeValues('anasayfa-sectionlar', 10);
     }
 
-    // Hizmetler liste sayfası URL'si
-    // getMenus() tüm nav menülerini döner (parent + children birlikte)
-    // parent_id null olanlar ana menü, dolu olanlar alt menü
     $hizmetlerMenuUrl   = '';
     $referanslarMenuUrl = '';
     $langKey            = App::getLocale();
 
     foreach(getMenus() as $menuItem) {
-        // Ana menü (parent_id yok veya 0) ve type hizmetler
         if(empty($menuItem['parent_id'])) {
             $name = strtolower(strip_tags($menuItem['name'] ?? ''));
             $perm = $menuItem['permalink'] ?? '';
@@ -66,7 +61,6 @@
                 </div>
                 <div class="ha-about__img">
                     <img src="{{ $resim }}" alt="{!! getValue('baslik', $homeSection) !!}">
-                    <div class="ha-about__img-deco"></div>
                 </div>
             </div>
         </div>
@@ -116,6 +110,54 @@
     </section>
     @endif
 
+
+    {{-- Anasayfa Sectionları --}}
+    @if(count($customSections) > 0)
+    <section class="ha-custom-sections">
+        <div class="container">
+            <div class="ha-section-head">
+                <div>
+                    <span class="ha-eyebrow">{{ __('Neden Biz') }}</span>
+                    <h2 class="ha-title">{{ __('Fark Yaratıyoruz') }}</h2>
+                </div>
+            </div>
+            <div class="ha-cs-list">
+                @foreach($customSections as $index => $section)
+                @php
+                    $sResim = isset($section['fields']['resim'][0])
+                        ? getImageLink($section['fields']['resim'][0]['path'], ['w' => 700, 'h' => 500, 'fit' => 'cover'])
+                        : null;
+                    $sBaslik = $section['name'] ?? '';
+                    $sAciklama = getValue('aciklama', $section) ?: getValue('Aciklama', $section) ?: '';
+                    $sButonVar = getValue('buton_var_mi', $section) ?: getValue('Buton Var Mi', $section) ?: '';
+                    $sButonMetni = getValue('buton_metni', $section) ?: getValue('Buton Metni', $section) ?: __('Detaylı Bilgi');
+                    $sButonLinki = getValue('buton_linki', $section) ?: getValue('Buton Linki', $section) ?: '#';
+                    $imgPosition = ($index % 2 == 0) ? 'left' : 'right';
+                @endphp
+                <div class="ha-cs-item ha-cs-item--{{ $imgPosition }}" data-aos="fade-up">
+                    @if($sResim)
+                    <div class="ha-cs-item__img">
+                        <img src="{{ $sResim }}" alt="{!! $sBaslik !!}" loading="lazy">
+                    </div>
+                    @endif
+                    <div class="ha-cs-item__content">
+                        <h3 class="ha-cs-item__title">{!! $sBaslik !!}</h3>
+                        <p class="ha-cs-item__desc">{!! $sAciklama !!}</p>
+                        @if($sButonVar == 'Evet' || $sButonVar == '1')
+                        <a href="{{ $sButonLinki }}" class="ha-cs-item__link">
+                            {{ $sButonMetni }}
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
+
     {{-- Referanslar --}}
     @if(count($referanslar) > 0)
     <section class="ha-refs">
@@ -161,54 +203,7 @@
     </section>
     @endif
 
-    {{-- Anasayfa Sectionları --}}
-    @if(count($customSections) > 0)
-    <section class="ha-custom-sections">
-        <div class="container">
-            <div class="ha-section-head">
-                <div>
-                    <span class="ha-eyebrow">{{ __('Neden Biz') }}</span>
-                    <h2 class="ha-title">{{ __('Fark Yaratıyoruz') }}</h2>
-                </div>
-            </div>
-            <div class="ha-cs-list">
-                @foreach($customSections as $index => $section)
-                @php
-                    $sResim = isset($section['fields']['resim'][0]) 
-                        ? getImageLink($section['fields']['resim'][0]['path'], ['w' => 700, 'h' => 500, 'fit' => 'cover'])
-                        : null;
-                    $sBaslik = $section['name'] ?? '';
-                    $sAciklama = getValue('aciklama', $section) ?: getValue('Aciklama', $section) ?: '';
-                    $sButonVar = getValue('buton_var_mi', $section) ?: getValue('Buton Var Mi', $section) ?: '';
-                    $sButonMetni = getValue('buton_metni', $section) ?: getValue('Buton Metni', $section) ?: __('Detaylı Bilgi');
-                    $sButonLinki = getValue('buton_linki', $section) ?: getValue('Buton Linki', $section) ?: '#';
-                    // Tek sayılı kartlarda resim solda, çift sayılılarda sağda
-                    $imgPosition = ($index % 2 == 0) ? 'left' : 'right';
-                @endphp
-                <div class="ha-cs-item ha-cs-item--{{ $imgPosition }}" data-aos="fade-up">
-                    @if($sResim)
-                    <div class="ha-cs-item__img">
-                        <img src="{{ $sResim }}" alt="{!! $sBaslik !!}" loading="lazy">
-                        <div class="ha-cs-item__deco"></div>
-                    </div>
-                    @endif
-                    <div class="ha-cs-item__content">
-                        <span class="ha-cs-item__num">{{ sprintf('%02d', $index + 1) }}</span>
-                        <h3 class="ha-cs-item__title">{!! $sBaslik !!}</h3>
-                        <p class="ha-cs-item__desc">{!! $sAciklama !!}</p>
-                        @if($sButonVar == 'Evet' || $sButonVar == '1')
-                        <a href="{{ $sButonLinki }}" class="ha-cs-item__link">
-                            {{ $sButonMetni }}
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                        @endif
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-    @endif
+
 
     {{-- İstatistikler --}}
     <section class="ha-stats">
@@ -255,87 +250,87 @@
 @section('css')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-    --bg:       #f8f7f4;
+    --bg:       #f5f4f0;
     --white:    #ffffff;
-    --ink:      #1c1c1c;
-    --ink-2:    #555550;
+    --ink:      #181818;
+    --ink-2:    #4a4a45;
     --ink-3:    #9a9891;
-    --border:   #e4e2dc;
-    --border-2: #ccc9c0;
-    --accent:   #2a3d52;
-    --accent-l: rgba(42,61,82,0.06);
-    --accent-m: rgba(42,61,82,0.12);
+    --border:   #e2e0d8;
+    --border-2: #c8c5ba;
+    --accent:   #1e3a4f;
+    --accent-l: rgba(30,58,79,0.06);
+    --accent-m: rgba(30,58,79,0.13);
+    --gold:     #b5904a;
 }
 
-/* ─── base ─── */
-.ha-about, .ha-services, .ha-refs, .ha-stats,
-.ha-about *, .ha-services *, .ha-refs *, .ha-stats * {
-    font-family: 'Outfit', sans-serif;
+.ha-about, .ha-services, .ha-refs, .ha-stats, .ha-custom-sections,
+.ha-about *, .ha-services *, .ha-refs *, .ha-stats *, .ha-custom-sections * {
+    font-family: 'Nunito', sans-serif;
     -webkit-font-smoothing: antialiased;
 }
 
-.container { width: min(1140px, 92vw); margin-inline: auto; }
+.container { width: min(1160px, 92vw); margin-inline: auto; }
 
-/* ─── shared atoms ─── */
+/* ── Eyebrow ── */
 .ha-eyebrow {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    font-size: .68rem;
-    font-weight: 500;
-    letter-spacing: .2em;
+    gap: 8px;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .18em;
     text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 14px;
+    color: var(--gold);
+    margin-bottom: 12px;
 }
 
 .ha-eyebrow::before {
     content: '';
     display: block;
-    width: 26px; height: 1px;
-    background: var(--accent);
-    opacity: .5;
+    width: 20px; height: 1px;
+    background: var(--gold);
 }
 
+/* ── Title ── */
 .ha-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 300;
-    line-height: 1.12;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.1rem, 3.8vw, 3rem);
+    font-weight: 500;
+    line-height: 1.18;
     color: var(--ink);
-    letter-spacing: -.015em;
-    margin-bottom: 0;
+    letter-spacing: -.01em;
 }
 
+/* ── Section Head ── */
 .ha-section-head {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 24px;
-    margin-bottom: 44px;
-    padding-bottom: 28px;
+    gap: 20px;
+    margin-bottom: 36px;
+    padding-bottom: 22px;
     border-bottom: 1px solid var(--border);
 }
 
-/* ─── buttons ─── */
+/* ── Buttons ── */
 .ha-btn {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
     padding: 13px 26px;
-    border-radius: 8px;
-    font-size: .875rem;
+    border-radius: 6px;
+    font-size: .95rem;
     font-weight: 600;
     text-decoration: none;
-    transition: all .22s;
+    transition: all .2s;
     white-space: nowrap;
-    letter-spacing: .02em;
+    letter-spacing: .01em;
 }
 
 .ha-btn--dark {
@@ -345,8 +340,8 @@
 }
 
 .ha-btn--dark:hover {
-    background: #1e2e3f;
-    box-shadow: 0 8px 28px var(--accent-m);
+    background: #142a3a;
+    box-shadow: 0 6px 22px var(--accent-m);
     transform: translateY(-2px);
     color: #fff;
     text-decoration: none;
@@ -355,7 +350,7 @@
 .ha-btn--outline {
     background: transparent;
     color: var(--accent);
-    border: 1px solid var(--accent-m);
+    border: 1px solid var(--border-2);
 }
 
 .ha-btn--outline:hover {
@@ -365,27 +360,27 @@
     text-decoration: none;
 }
 
-.ha-btn--sm { padding: 10px 20px; font-size: .78rem; }
+.ha-btn--sm { padding: 10px 20px; font-size: .85rem; }
 
 .ha-btn__arr {
-    width: 24px; height: 24px;
+    width: 22px; height: 22px;
     border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
-    font-size: .7rem;
+    font-size: .65rem;
     transition: transform .2s;
 }
 
-.ha-btn--dark .ha-btn__arr   { background: rgba(255,255,255,.15); }
+.ha-btn--dark .ha-btn__arr   { background: rgba(255,255,255,.13); }
 .ha-btn--outline .ha-btn__arr { background: var(--accent-l); }
+.ha-btn:hover .ha-btn__arr   { transform: translateX(4px); }
+.ha-btn--outline:hover .ha-btn__arr { background: rgba(255,255,255,.13); }
 
-.ha-btn:hover .ha-btn__arr { transform: translateX(4px); }
-.ha-btn--outline:hover .ha-btn__arr { background: rgba(255,255,255,.15); }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════
    HAKKIMIZDA
-═══════════════════════════════════ */
+══════════════════════════ */
 .ha-about {
-    padding: 100px 0;
+    padding: 72px 0;
     background: var(--white);
     border-bottom: 1px solid var(--border);
 }
@@ -393,50 +388,54 @@
 .ha-about__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 80px;
+    gap: 64px;
     align-items: center;
 }
 
-.ha-about__content { display: flex; flex-direction: column; gap: 0; }
+.ha-about__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
 
-.ha-about__content .ha-title { margin: 0 0 22px; }
+.ha-about__content .ha-title { margin: 0 0 18px; }
 
 .ha-about__text {
-    font-size: 1rem;
+    font-size: 1.05rem;
     color: var(--ink-2);
-    line-height: 1.8;
-    font-weight: 300;
-    margin-bottom: 32px;
+    line-height: 1.85;
+    font-weight: 400;
+    margin-bottom: 28px;
 }
 
 .ha-about__img {
     position: relative;
-    border-radius: 12px;
+    border-radius: 10px;
     overflow: hidden;
+    box-shadow: 0 20px 60px rgba(30,58,79,.12);
+}
+
+.ha-about__img::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 60%, rgba(30,58,79,.08));
+    z-index: 1;
+    pointer-events: none;
 }
 
 .ha-about__img img {
     width: 100%;
     display: block;
-    border-radius: 12px;
-    border: 1px solid var(--border);
+    border-radius: 10px;
 }
 
-.ha-about__img-deco {
-    position: absolute;
-    inset: -8px -8px auto auto;
-    width: 120px; height: 120px;
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: -1;
-}
 
-/* ═══════════════════════════════════
+/* ══════════════════════════
    HİZMETLER
-═══════════════════════════════════ */
+══════════════════════════ */
 .ha-services {
-    padding: 100px 0;
+    padding: 72px 0;
     background: var(--bg);
     border-bottom: 1px solid var(--border);
 }
@@ -444,82 +443,90 @@
 .ha-services__grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 16px;
 }
 
 .ha-scard {
     background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 28px 24px;
+    border-radius: 10px;
+    padding: 24px 22px;
     display: flex;
     flex-direction: column;
     text-decoration: none;
     color: inherit;
-    transition: transform .26s ease, box-shadow .26s ease, border-color .26s ease;
+    transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
     position: relative;
     overflow: hidden;
 }
 
-.ha-scard::after {
+.ha-scard::before {
     content: '';
     position: absolute;
-    bottom: 0; left: 0;
-    width: 0; height: 2px;
-    background: var(--accent);
-    transition: width .3s ease;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--accent));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .3s ease;
 }
 
-.ha-scard:hover { transform: translateY(-5px); box-shadow: 0 16px 44px rgba(42,61,82,.1); border-color: var(--border-2); text-decoration: none; color: inherit; }
-.ha-scard:hover::after { width: 100%; }
+.ha-scard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 40px rgba(30,58,79,.1);
+    border-color: var(--border-2);
+    text-decoration: none;
+    color: inherit;
+}
+
+.ha-scard:hover::before { transform: scaleX(1); }
 
 .ha-scard__num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.3rem;
-    font-weight: 300;
-    color: var(--accent);
-    opacity: .35;
-    margin-bottom: 16px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--gold);
+    opacity: .5;
+    margin-bottom: 14px;
     line-height: 1;
 }
 
 .ha-scard__ico {
-    width: 44px; height: 44px;
+    width: 40px; height: 40px;
     background: var(--accent-l);
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
     color: var(--accent);
-    font-size: 1.1rem;
-    margin-bottom: 16px;
+    font-size: 1rem;
+    margin-bottom: 14px;
     transition: background .2s;
 }
 
 .ha-scard:hover .ha-scard__ico { background: var(--accent-m); }
-
-.ha-scard__ico img { max-width: 22px; max-height: 22px; }
+.ha-scard__ico img { max-width: 20px; max-height: 20px; }
 
 .ha-scard__name {
-    font-size: 1rem;
-    font-weight: 500;
+    font-size: 1.05rem;
+    font-weight: 600;
     color: var(--ink);
     margin-bottom: 10px;
     line-height: 1.35;
 }
 
 .ha-scard__desc {
-    font-size: .85rem;
+    font-size: .93rem;
     color: var(--ink-2);
-    line-height: 1.6;
-    font-weight: 300;
+    line-height: 1.7;
+    font-weight: 400;
     flex: 1;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .ha-scard__link {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    font-size: .72rem;
+    gap: 6px;
+    font-size: .8rem;
     font-weight: 600;
     letter-spacing: .08em;
     text-transform: uppercase;
@@ -528,13 +535,14 @@
     transition: gap .2s;
 }
 
-.ha-scard:hover .ha-scard__link { gap: 11px; }
+.ha-scard:hover .ha-scard__link { gap: 10px; }
 
-/* ═══════════════════════════════════
+
+/* ══════════════════════════
    REFERANSLAR
-═══════════════════════════════════ */
+══════════════════════════ */
 .ha-refs {
-    padding: 100px 0;
+    padding: 72px 0;
     background: var(--white);
     border-bottom: 1px solid var(--border);
 }
@@ -542,53 +550,54 @@
 .ha-refs__grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 18px;
+    gap: 14px;
 }
 
 .ha-ref {
     position: relative;
-    height: 96px;
+    height: 88px;
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    padding: 18px;
+    padding: 16px;
     cursor: pointer;
     overflow: hidden;
-    transition: border-color .22s, box-shadow .22s;
+    transition: border-color .2s, box-shadow .2s;
 }
 
-.ha-ref:hover { border-color: var(--border-2); box-shadow: 0 8px 24px rgba(42,61,82,.08); }
+.ha-ref:hover {
+    border-color: var(--border-2);
+    box-shadow: 0 6px 20px rgba(30,58,79,.08);
+}
 
 .ha-ref img {
     max-width: 100%; max-height: 100%;
     object-fit: contain;
-    filter: grayscale(1) opacity(.65);
-    transition: filter .3s;
+    filter: grayscale(1) opacity(.55);
+    transition: filter .28s;
 }
 
 .ha-ref:hover img { filter: grayscale(0) opacity(1); }
 
 .ha-ref__name {
-    font-size: .85rem;
+    font-size: .82rem;
     font-weight: 500;
     color: var(--ink-2);
     text-align: center;
-    line-height: 1.4;
 }
 
 .ha-ref__overlay {
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: var(--accent);
     display: flex; align-items: center; justify-content: center;
     color: #fff;
-    font-size: .9rem;
+    font-size: .85rem;
     opacity: 0;
-    transition: opacity .25s;
+    transition: opacity .22s;
 }
 
-.ha-ref:hover .ha-ref__overlay { opacity: .85; }
+.ha-ref:hover .ha-ref__overlay { opacity: .88; }
 
 /* Modal */
 .ref-modal {
@@ -600,211 +609,160 @@
 
 .ref-overlay {
     position: absolute; inset: 0;
-    background: rgba(28,28,28,.55);
-    backdrop-filter: blur(4px);
+    background: rgba(24,24,24,.5);
+    backdrop-filter: blur(5px);
 }
 
 .ref-content {
     position: relative;
     background: var(--white);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 44px;
-    max-width: 520px; width: 90%;
+    border-radius: 12px;
+    padding: 38px;
+    max-width: 500px; width: 90%;
     z-index: 1001;
-    box-shadow: 0 32px 80px rgba(28,28,28,.16);
+    box-shadow: 0 28px 70px rgba(24,24,24,.15);
 }
 
 .ref-close {
-    position: absolute; top: 18px; right: 18px;
-    width: 34px; height: 34px;
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px;
     border: 1px solid var(--border);
     background: var(--bg);
     border-radius: 50%;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    color: var(--ink-3); font-size: .75rem;
+    color: var(--ink-3); font-size: .7rem;
     transition: all .2s;
 }
 
 .ref-close:hover { border-color: var(--accent); color: var(--accent); }
 
 .ref-content h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem; font-weight: 400;
-    color: var(--ink); margin-bottom: 18px;
-    padding-bottom: 18px; border-bottom: 1px solid var(--border);
-    letter-spacing: -.01em; line-height: 1.2;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem; font-weight: 500;
+    color: var(--ink); margin-bottom: 16px;
+    padding-bottom: 16px; border-bottom: 1px solid var(--border);
+    line-height: 1.2;
 }
 
 .ref-content p {
-    font-size: .92rem; color: var(--ink-2);
-    line-height: 1.75; font-weight: 300;
+    font-size: 1rem; color: var(--ink-2);
+    line-height: 1.8; font-weight: 400;
 }
 
-/* ═══════════════════════════════════
+
+/* ══════════════════════════
    ANASAYFA SECTIONLARI
-═══════════════════════════════════ */
+══════════════════════════ */
 .ha-custom-sections {
-    padding: 100px 0;
-    background: var(--white);
+    padding: 72px 0;
+    background: var(--bg);
     border-bottom: 1px solid var(--border);
 }
 
 .ha-cs-list {
     display: flex;
     flex-direction: column;
-    gap: 80px;
+    gap: 60px;
 }
 
 .ha-cs-item {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 60px;
+    gap: 52px;
     align-items: center;
 }
 
-/* Resim solda (tek sayılar: 1, 3, 5...) */
-.ha-cs-item--left {
-    direction: ltr;
-}
-
-/* Resim sağda (çift sayılar: 2, 4, 6...) */
-.ha-cs-item--right {
-    direction: rtl;
-}
-
-.ha-cs-item--right > * {
-    direction: ltr;
-}
+.ha-cs-item--left  { direction: ltr; }
+.ha-cs-item--right { direction: rtl; }
+.ha-cs-item--right > * { direction: ltr; }
 
 .ha-cs-item__img {
     position: relative;
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
     aspect-ratio: 4/3;
+    box-shadow: 0 16px 50px rgba(30,58,79,.1);
 }
 
 .ha-cs-item__img img {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     object-fit: cover;
-    transition: transform .6s ease;
+    transition: transform .55s ease;
 }
 
-.ha-cs-item:hover .ha-cs-item__img img {
-    transform: scale(1.05);
-}
+.ha-cs-item:hover .ha-cs-item__img img { transform: scale(1.04); }
 
-.ha-cs-item__deco {
-    position: absolute;
-    inset: auto -20px -20px auto;
-    width: 100px;
-    height: 100px;
-    background: var(--accent);
-    border-radius: 50%;
-    opacity: .06;
-    pointer-events: none;
-}
-
-.ha-cs-item__content {
-    padding: 20px 0;
-}
-
-.ha-cs-item__num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    background: var(--accent);
-    color: #fff;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem;
-    font-weight: 400;
-    border-radius: 50%;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 16px rgba(42,61,82,.2);
-}
+.ha-cs-item__content { padding: 12px 0; }
 
 .ha-cs-item__title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(1.8rem, 3vw, 2.4rem);
-    font-weight: 400;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.7rem, 2.8vw, 2.3rem);
+    font-weight: 500;
     color: var(--ink);
-    margin-bottom: 20px;
-    line-height: 1.2;
+    margin-bottom: 16px;
+    line-height: 1.22;
 }
 
 .ha-cs-item__desc {
     font-size: 1rem;
     color: var(--ink-2);
-    line-height: 1.8;
-    font-weight: 300;
-    margin-bottom: 28px;
+    line-height: 1.85;
+    font-weight: 400;
+    margin-bottom: 24px;
 }
 
 .ha-cs-item__link {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 14px 28px;
+    gap: 9px;
+    padding: 13px 26px;
     background: var(--accent);
     color: #fff;
-    font-size: .85rem;
+    font-size: .93rem;
     font-weight: 600;
     text-decoration: none;
-    border-radius: 8px;
-    transition: all .25s ease;
+    border-radius: 6px;
+    transition: all .22s ease;
 }
 
 .ha-cs-item__link:hover {
-    background: #1e2e3f;
-    box-shadow: 0 8px 28px rgba(42,61,82,.25);
+    background: #142a3a;
+    box-shadow: 0 6px 22px rgba(30,58,79,.22);
     transform: translateY(-2px);
     text-decoration: none;
     color: #fff;
 }
 
-.ha-cs-item__link i {
-    font-size: .75rem;
-    transition: transform .2s;
-}
-
-.ha-cs-item__link:hover i {
-    transform: translateX(4px);
-}
+.ha-cs-item__link i { font-size: .7rem; transition: transform .2s; }
+.ha-cs-item__link:hover i { transform: translateX(4px); }
 
 @media (max-width: 900px) {
-    .ha-cs-item {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-    .ha-cs-item__img {
-        aspect-ratio: 16/9;
-    }
-    .ha-cs-list { gap: 60px; }
+    .ha-cs-item { grid-template-columns: 1fr; gap: 26px; }
+    .ha-cs-item__img { aspect-ratio: 16/9; }
+    .ha-cs-list { gap: 48px; }
 }
 
-/* ═══════════════════════════════════
+
+/* ══════════════════════════
    İSTATİSTİKLER
-═══════════════════════════════════ */
+══════════════════════════ */
 .ha-stats {
-    padding: 80px 0;
+    padding: 60px 0;
     background: var(--accent);
-    border-bottom: 1px solid rgba(255,255,255,.08);
+    border-bottom: 1px solid rgba(255,255,255,.07);
 }
 
 .ha-stats__grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 0;
 }
 
 .ha-stat {
     display: flex; flex-direction: column; align-items: center;
-    padding: 12px 20px;
-    border-right: 1px solid rgba(255,255,255,.12);
+    padding: 8px 20px;
+    border-right: 1px solid rgba(255,255,255,.1);
     text-align: center;
 }
 
@@ -812,45 +770,46 @@
 
 .ha-stat__num {
     display: block;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.8rem, 4vw, 4rem);
-    font-weight: 300;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 3.5vw, 3.4rem);
+    font-weight: 400;
     color: #fff;
     line-height: 1;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     letter-spacing: -.02em;
 }
 
 .ha-stat__lbl {
-    font-size: .68rem;
+    font-size: .78rem;
     font-weight: 500;
     letter-spacing: .14em;
     text-transform: uppercase;
     color: rgba(255,255,255,.55);
 }
 
-/* ─── responsive ─── */
+
+/* ── Responsive ── */
 @media (max-width: 1100px) {
     .ha-services__grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 1024px) {
-    .ha-about__grid { grid-template-columns: 1fr; gap: 48px; }
+    .ha-about__grid { grid-template-columns: 1fr; gap: 40px; }
     .ha-about__img  { order: -1; }
     .ha-refs__grid  { grid-template-columns: repeat(3, 1fr); }
     .ha-stats__grid { grid-template-columns: repeat(2, 1fr); }
-    .ha-stat        { border-bottom: 1px solid rgba(255,255,255,.12); padding: 28px 20px; }
+    .ha-stat        { border-bottom: 1px solid rgba(255,255,255,.1); padding: 24px 20px; }
     .ha-stat:nth-child(2), .ha-stat:last-child { border-right: none; }
 }
 
 @media (max-width: 768px) {
-    .ha-about, .ha-services, .ha-refs { padding: 70px 0; }
-    .ha-section-head { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .ha-about, .ha-services, .ha-refs, .ha-custom-sections { padding: 52px 0; }
+    .ha-section-head { flex-direction: column; align-items: flex-start; gap: 14px; }
     .ha-services__grid { grid-template-columns: 1fr; }
     .ha-refs__grid  { grid-template-columns: repeat(2, 1fr); }
     .ha-stats__grid { grid-template-columns: 1fr; }
     .ha-stat        { border-right: none; }
-    .ref-content    { padding: 30px 22px; }
+    .ref-content    { padding: 26px 20px; }
 }
 </style>
 @endsection
