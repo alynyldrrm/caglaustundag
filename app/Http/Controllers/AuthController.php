@@ -25,9 +25,14 @@ class AuthController extends Controller
         return redirect()->back()->withErrors(trans('customErrorMessages.loginError'));
     }
 
-    function logout()
-    {
-        Auth::logout();
-        return redirect()->route('login.get');
-    }
+    function logout(Request $request) 
+{
+    Auth::logout();
+    
+    // Güvenlik ve oturum temizliği için bu iki satır çok önemlidir
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('login.get');
+}
 }
